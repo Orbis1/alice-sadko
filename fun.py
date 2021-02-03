@@ -37,6 +37,8 @@ def make_response(
         'version':'1.0',
     }
 
+    return webhook_response
+
 def make_only_response(
     text="Текст ответа здесь",
     tts=None, 
