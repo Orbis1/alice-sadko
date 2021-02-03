@@ -22,10 +22,19 @@ def say_help():
 
 def ask_geo(state):
   state['geo_asked'] = True; 
+  state['context'] = 'ask_geo'; 
   return make_only_response(
     text = ph.needgeo['txt'],
     tts = ph.needgeo['tts'],
     directives = { 'request_geolocation': {} },
+  )
+
+def start_game(state, with_geo):
+  state['context'] = 'start_game'; 
+  state['with_geo'] = with_geo; 
+  return make_only_response(
+    text = ph.start['txt'],
+    tts = ph.start['tts'],
   )
 
 def fallback(command):

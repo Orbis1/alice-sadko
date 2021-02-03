@@ -2,6 +2,7 @@
 from fun import fallback
 from person import person
 import navigation as n
+import game
 
 def handler(event, context):
 
@@ -30,15 +31,19 @@ def handler(event, context):
         intents = request.get('nlu',{}).get('intents', {})
         command = request['command']
         context = sessionState.get('context')
-        geo_asked = appState.get('geo_asked', False)
+        geo_asked = sessionState.get('geo_asked', False)
 
         if new_session: return n.welcome(state=sessionState, context='welcome')
 
-        # if user_location is None:
-        #     if geo_asked!=True:
-        #         return n.ask_geo(appState)
-        #     else:
-        #         return n.say('уйбуй')
+        if user_location is None:
+            if geo_asked==False:
+                return n.ask_geo(state=sessionState)
+            else:
+                 # начало игры без геолокации
+                return game.start(request, sessionState, appState,  with_geo=False)
+        else:
+            # начало игры c геолокацией
+            return game.start(request, sessionState, appState, with_geo=True)
 
         if 'YANDEX.CONFIRM' in intents:
             if context=='welcome': return n.say('Переход к запросу навигации')
@@ -49,7 +54,7 @@ def handler(event, context):
         if 'help' in intents:
             return n.say_help()
 
-        return n.fallback
+        return n.fallback(command)
 
     # skill answer
     response = worker(request, sessionState, appState)
@@ -61,29 +66,8 @@ def handler(event, context):
         'version': event['version']
     }
 
+    
 
 
-
-
-
-    # if user_location is None and geo_asked=True:
-    #     #
-
-    # if context == 'ask_geo' and geo_type == "Geolocation.Allowed":
-    #     # пользователь дал разрешение на использование гео-локации
-    #     geo_asked = True
-    #     geo_allowed = True
-
-    # if context == 'ask_geo' and geo_type == "Geolocation.Rejected":
-    #     # пользователь не дал разрешение на использование гео-локации
-
-
-
-
-    # elif step >0:
-        # place_early=event.get('state').get('application').get('place_seen')
-        # return person(event,step,place_early, status=status)
-    # else:
-        # return fallback(event)
 
 
