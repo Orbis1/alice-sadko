@@ -1,6 +1,18 @@
 from resource import pers_help
-def make_response(text="Текст ответа здесь",tts=None, buttons=None,
-step=None, place=None, status=None, card=None,end_session=False,place_next=None):
+def make_response(
+    text="Текст ответа здесь",
+    tts=None, 
+    buttons=None,
+    step=None, 
+    place=None, 
+    status=None, 
+    card=None,
+    directives=False,
+    end_session=False,
+    place_next=None,
+    context=None,
+    geo_asked=None
+    ):
     response = {
             'text':text,
             'tts': tts if tts is not None else text,
@@ -12,15 +24,52 @@ step=None, place=None, status=None, card=None,end_session=False,place_next=None)
         response['card']=card
     if place_next is not None:
         response['place_next']=place_next
+    if directives is True:
+        response['directives']={"request_geolocation": {}}
+
     webhook_response={
         'response': response,
         "application_state": {
             "step": step,
             "place_seen": place,
-            "status": status
+            "status": status,
         },
         'version':'1.0',
     }
+
+def make_only_response(
+    text="Текст ответа здесь",
+    tts=None, 
+    end_session=False,
+    buttons=None,
+    card=None,
+    directives=False, 
+    ):
+    response = {
+            'text':text,
+            'tts': tts if tts is not None else text,
+            "end_session": end_session
+        }
+    if buttons is not None:
+        response['buttons'] = buttons
+    if card is not None:
+        response['card']=card
+    if directives is True:
+        response['directives']={"request_geolocation": {}}
+
+    return  response
+
+
+    if context is not None:
+        if webhook_response.get('session_state') is None:
+            webhook_response['session_state'] = {}
+        webhook_response['session_state'] = {'context': context};
+
+    if geo_asked is not None:
+        webhook_response['user_state_update'] = {}
+        webhook_response['user_state_update']['geo_asked'] = geo_asked      
+
+
     print(webhook_response)
     return  webhook_response
 
