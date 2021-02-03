@@ -59,7 +59,7 @@ def make_only_response(
     if directives is True:
         response['directives']={"request_geolocation": {}}
 
-    return  response
+    return response
 
 
     if context is not None:
