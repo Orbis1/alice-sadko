@@ -88,12 +88,19 @@ def button(title, payload=None, url=None, hide=False):
     if url is not None:
         button['url'] = url
     return button
-def image_gallery(image_ids,description):
-    return {
+def image_gallery(image_ids,description, gallery_type=None,items_gallery=None,):
+    if gallery_type is None:
+        card_resp={
         'type':'BigImage',
         'image_id':image_ids,
         'description':description
     }
+    else:
+        card_resp={
+            "type": "ImageGallery",
+            "items": items_gallery
+        },
+    return card_resp
 def end_session1(text=None,tts=None,step=None,place=None,status=None):
     if text is None:
         text='''Скоро сказка сказывается, да не скоро дело делается.\
