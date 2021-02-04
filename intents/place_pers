@@ -1,0 +1,6 @@
+slots:
+    place:
+        source: $Place
+        type: Place
+root:
+    $Place
