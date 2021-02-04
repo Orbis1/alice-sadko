@@ -20,7 +20,6 @@ def welcome(state, appStateClear=False, appState=False):
   )
 
 def say(txt="wawa"):
-  print(txt)
   return make_only_response(
     text=txt
   )

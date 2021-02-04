@@ -12,7 +12,6 @@ def make_response(
     place_next=None,
     event={}
     ):
-    print(event)
     appState = event['state']['application']
     # sessionState = event['state']['session']
     response = {
@@ -41,7 +40,8 @@ def make_response(
     if step is not None: appState['step'] = step
     if place is not None: appState['place_seen'] = place
     if status is not None: appState['status'] = status
-
+    
+    print (response)
     return response
 
 def make_only_response(
@@ -80,12 +80,14 @@ def button(title, payload=None, url=None, hide=False):
     if url is not None:
         button['url'] = url
     return button
+
 def image_gallery(image_ids,description):
     return {
-        'type':'BigImage',
-        'image_id':image_ids,
-        'description':description
+        'type':'ImageGallery',
+        'image_id': image_ids,
+        'description': description
     }
+    
 def end_session1(text=None,tts=None,step=None,place=None,status=None, event={}):
     if text is None:
         text='''Скоро сказка сказывается, да не скоро дело делается.\

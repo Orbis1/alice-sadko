@@ -5,15 +5,6 @@ import navigation as n
 
 def handler(event, context):
 
-
-   
-    # print (event)
-    # intents = event['request'].get('nlu',{}).get('intents')
-    # text = {'Куку тест функции'}
-    # Перенести
-    # step=event.get('state').get('application').get('step')
-    # status=event.get('state').get('application').get('status')
-
     # session
     new_session = event['session']['new']
     user_location = event['session'].get('location')
@@ -46,12 +37,11 @@ def handler(event, context):
 
         if context=='continue_game':
             if 'YANDEX.CONFIRM' in intents:
-                return person(event, appState.get('step'), 'kupol')
+                return person(event=event, step=appState['step'], place=appState['place'], status=appState.get('status'))
             if 'YANDEX.REJECT' in intents:
                 return n.welcome(state=sessionState, appStateClear=True, appState=appState)      
 
         if context=='welcome':
-            print('YANDEX.CONFIRM' in intents, )
             if 'YANDEX.CONFIRM' in intents:
                 # запрос геолокации
                 if user_location is None and geo_asked==False:
@@ -82,21 +72,7 @@ def handler(event, context):
                 return n.bye()
 
         if context=='quest_begin':
-            return person(event=event, step=appState['step'], place=appState['place'], status=appState.get('status') )
-
-
-
-
-
-        # Если есть данные в appState
-        # if story_mode==True:
-        #     if context=='somewhere':
-        #         if 'YANDEX.CONFIRM' in intents:
-        #             return person(event, appState.get('step'), 'kupol')
-        #         if 'YANDEX.REJECT' in intents:
-        #             return n.bye()
-        #     else:
-        #         return person(event, appState.get('step'), 'kupol')
+            return person(event=event, step=appState['step'], place=appState['place'], status=appState.get('status'))
 
         if 'help' in intents:
             return n.say_help()
