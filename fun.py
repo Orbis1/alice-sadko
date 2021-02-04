@@ -81,13 +81,13 @@ def button(title, payload=None, url=None, hide=False):
         button['url'] = url
     return button
 
-def image_gallery(image_ids,description):
+def big_image(image_ids,description):
     return {
-        'type':'ImageGallery',
+        'type':'BigImage',
         'image_id': image_ids,
         'description': description
     }
-    
+
 def end_session1(text=None,tts=None,step=None,place=None,status=None, event={}):
     if text is None:
         text='''Скоро сказка сказывается, да не скоро дело делается.\
@@ -107,7 +107,7 @@ def text_to_resp(source,ind_1=None,ind_2=None,card=None,obj_3=None,obj_4=None):
         tts=source[ind_1][ind_2][1]
         status=source[ind_1][ind_2][2]
         if card is not None:
-            card=image_gallery(source[ind_1][ind_2][3],description=text)
+            card=big_image(source[ind_1][ind_2][3],description=text)
         if obj_3 is not None:
             obj_3=source[ind_1][ind_2][3]
         if obj_4 is not None:
@@ -117,7 +117,7 @@ def text_to_resp(source,ind_1=None,ind_2=None,card=None,obj_3=None,obj_4=None):
         tts=source[ind_1][1]
         status=source[ind_1][2]
         if card is not None:
-            card=image_gallery(source[ind_1][3],description=text)
+            card=big_image(source[ind_1][3],description=text)
         if obj_3 is not None:
             obj_3=source[ind_1][3]
         if obj_4 is not None:
@@ -127,7 +127,7 @@ def text_to_resp(source,ind_1=None,ind_2=None,card=None,obj_3=None,obj_4=None):
         tts=source[1]
         status=source[2]
         if card is not None:
-            card=image_gallery(source[3],description=text) 
+            card=big_image(source[3],description=text) 
         if obj_3 is not None:
             obj_3=source[3]
         if obj_4 is not None:
