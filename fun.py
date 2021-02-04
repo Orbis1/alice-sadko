@@ -10,9 +10,10 @@ def make_response(
     directives=False,
     end_session=False,
     place_next=None,
-    context=None,
-    geo_asked=None
+    event={}
     ):
+    appState = event['state']['application']
+    # sessionState = event['state']['session']
     response = {
             'text':text,
             'tts': tts if tts is not None else text,
@@ -27,17 +28,20 @@ def make_response(
     if directives is True:
         response['directives']={"request_geolocation": {}}
 
-    webhook_response={
-        'response': response,
-        "application_state": {
-            "step": step,
-            "place_seen": place,
-            "status": status,
-        },
-        'version':'1.0',
-    }
+    # webhook_response={
+    #     'response': response,
+    #     "application_state": {
+    #         "step": step,
+    #         "place_seen": place,
+    #         "status": status,
+    #     },
+    #     'version':'1.0',
+    # }
+    if step is not None: appState['step'] = step
+    if place is not None: appState['place_seen'] = place
+    if status is not None: appState['status'] = status
 
-    return webhook_response
+    return response
 
 def make_only_response(
     text="Текст ответа здесь",
@@ -60,20 +64,6 @@ def make_only_response(
         response['directives']={"request_geolocation": {}}
 
     return response
-
-
-    if context is not None:
-        if webhook_response.get('session_state') is None:
-            webhook_response['session_state'] = {}
-        webhook_response['session_state'] = {'context': context};
-
-    if geo_asked is not None:
-        webhook_response['user_state_update'] = {}
-        webhook_response['user_state_update']['geo_asked'] = geo_asked      
-
-
-    print(webhook_response)
-    return  webhook_response
 
 def fallback(event):
     text="Извините данный диалог в разработке"

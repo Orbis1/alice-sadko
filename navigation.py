@@ -56,7 +56,7 @@ def fallback(command):
 # with location
 def how_far_from_kremlin(appState, sessionState, user_location):
   if user_location is not None and user_location['accuracy'] < 100:
-      target = sights['one_k_year']
+      target = sights['kupol']
       distance = get_distance_to_object(user_location, target['location'])
       print('Расстояние до {name} составялет {distance}'.format(name=target['name'], distance=distance))
     
@@ -123,9 +123,9 @@ def begin(state):
     buttons=ph.hi['buttons']
   )
 
-def one_k_year_story(state):
+def kupol_story(state):
   txt = 'Купол этот не простой...Идём к Кащею?'
-  state['context'] = 'one_k_year_story'
+  state['context'] = 'kupol_story'
   return make_only_response(
     text=txt,
     buttons=ph.hi['buttons']
@@ -134,8 +134,8 @@ def one_k_year_story(state):
 def quest_begin(appState, sessionState):
   sessionState['context'] = 'quest_begin'
   appState['step'] = 0
-  appState['target'] = 'one_k_year'
-  to_target = sights['one_k_year']['to_tip_name'] 
+  appState['place'] = 'kupol'
+  to_target = sights['kupol']['to_tip_name'] 
   txt = 'Покатился клубок к {}. Следуй за ним. Как дойдешь - скажи "Я на месте". А пока идём могу тебе про это место рассказать. Интересно?'.format(to_target)
   return make_only_response(
     text=txt,
@@ -145,8 +145,8 @@ def quest_begin(appState, sessionState):
 def quest_(appState, sessionState):
   sessionState['context'] = 'quest_begin'
   step = appState['step']
-  appState['target'] = 'one_k_year'
-  to_target = sights['one_k_year']['to_tip_name'] 
+  appState['target'] = 'kupol'
+  to_target = sights['kupol']['to_tip_name'] 
   txt = 'Покатился клубок к {}. Следуй за ним. Как дойдешь - скажи "Я на месте". А пока идём могу тебе про это место рассказать. Интересно?'.format(to_target)
   return make_only_response(
     text=txt,

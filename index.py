@@ -83,7 +83,7 @@ def handler(event, context):
                 return n.bye()
 
         if context=='quest_begin':
-            return
+            return person(event=event, step=appState['step'], place=appState['place'], status=appState.get('status') )
 
 
 
