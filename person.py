@@ -1,4 +1,8 @@
-# import random
+from fun import help_4_zagadka, text_to_resp, make_response, fallback, button,image_gallery,end_session1
+from resource import fallback_answer,answer, pers_step, pers_help, pers_zag,pers_sprav
+
+
+import random
 def person(event,step,place, status=None, id_zag=None):
     intents= event['request'].get('nlu',{}).get('intents')
     # if step==0:
