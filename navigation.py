@@ -3,25 +3,17 @@ from math import sin, cos, sqrt, atan2, radians
 from sights import sights
 import phrases as ph
 
-# developer
-def clear_app_state(aState, sState):
-  for key in aState:
-    aState[key]='null'
-  sState['context'] = 'clear_app_state'
-  return make_only_response(
-    text='appState clear',
-  )
-
-
 def bye():
   return make_only_response(
     text='Пока-пока',
     end_session=True
   )
 
-
-def welcome(state):
+def welcome(state, appStateClear=False, appState=False):
   state['context'] = 'welcome'
+  if appStateClear:
+    for key in appState:
+      appState[key]='null'
   return make_only_response(
     text=ph.hi['txt'],
     buttons=ph.hi['buttons']
@@ -62,41 +54,41 @@ def fallback(command):
   )
 
 # with location
-def how_far_from_kremlin(aState, sState, user_location):
+def how_far_from_kremlin(appState, sessionState, user_location):
   if user_location is not None and user_location['accuracy'] < 100:
       target = sights['one_k_year']
       distance = get_distance_to_object(user_location, target['location'])
       print('Расстояние до {name} составялет {distance}'.format(name=target['name'], distance=distance))
     
       if distance < 300:
-        return within_kremlin(aState, sState) 
+        return within_kremlin(appState, sessionState) 
       if 300 <= distance < 500: 
-        return around_kremlin(aState, sState)
+        return around_kremlin(appState, sessionState)
       if distance > 500:
-        return somewhere(aState, sState)
+        return somewhere(appState, sessionState)
       
 
-def within_kremlin(aState, sState):
+def within_kremlin(appState, sessionState):
   txt = 'Вы на территории Новгодоского Кремля. Рассказать про Кремль?'
-  sState['context'] = 'within_kremlin'
+  sessionState['context'] = 'within_kremlin'
   return make_only_response(
     text=txt,
     buttons=ph.hi['buttons']
   )
 
-def around_kremlin(aState, sState):
+def around_kremlin(appState, sessionState):
   txt = 'Вы рядом с Новгородским Кремлём. Подойдите к Кремлёвским воротам и скажите "Я возле ворот"'
-  sState['context'] = 'around_kremlin'
+  sessionState['context'] = 'around_kremlin'
   return make_only_response(
     text=txt,
     buttons=[{ 'title': "Я возле ворот", 'hide': True }]
   )
 
-def somewhere(aState, sState):
+def somewhere(appState, sessionState):
   txt = 'Вы очень далеко от Новгородского Кремля. Продолжить в режиме повествования?'
-  sState['context'] = 'somewhere'
-  sState['story_mode'] = True
-  aState['step'] = 0
+  sessionState['context'] = 'somewhere'
+  sessionState['story_mode'] = True
+  appState['step'] = 0
   return make_only_response(
     text=txt,
     buttons=ph.hi['buttons']
@@ -138,3 +130,29 @@ def one_k_year_story(state):
     text=txt,
     buttons=ph.hi['buttons']
   )
+
+def quest_begin(appState, sessionState):
+  sessionState['context'] = 'quest_begin'
+  appState['step'] = 0
+  appState['target'] = 'one_k_year'
+  to_target = sights['one_k_year']['to_tip_name'] 
+  txt = 'Покатился клубок к {}. Следуй за ним. Как дойдешь - скажи "Я на месте". А пока идём могу тебе про это место рассказать. Интересно?'.format(to_target)
+  return make_only_response(
+    text=txt,
+    buttons=ph.quest['buttons']
+  )
+
+def quest_(appState, sessionState):
+  sessionState['context'] = 'quest_begin'
+  step = appState['step']
+  appState['target'] = 'one_k_year'
+  to_target = sights['one_k_year']['to_tip_name'] 
+  txt = 'Покатился клубок к {}. Следуй за ним. Как дойдешь - скажи "Я на месте". А пока идём могу тебе про это место рассказать. Интересно?'.format(to_target)
+  return make_only_response(
+    text=txt,
+    buttons=ph.quest['buttons']
+  )
+
+
+
+  

@@ -7,6 +7,14 @@ hi = {
     ]
   }
 
+quest = {
+  'buttons': [
+      { 'title': "Я на месте", 'hide': False },
+      { 'title': "Да", 'hide': False },
+      { 'title': "Нет", 'hide': False },
+    ]
+  }
+
 needgeo = {
   'txt': 'Нужен доступ к гео-локации',
   'tts': 'Нужен доступ к гео-локации'

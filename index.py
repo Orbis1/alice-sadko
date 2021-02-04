@@ -39,19 +39,17 @@ def handler(event, context):
         geo_asked = sessionState.get('geo_asked', False)
         story_mode = sessionState.get('story_mode')
 
-        print('Обработка новой сессии')
         if new_session==True: 
-            if story_mode==True or appState.get('step'):
+            if story_mode==True or appState.get('step') is not None:
                 return n.continue_game(sessionState)
             else:
                 return n.welcome(state=sessionState)
-
 
         if context=='continue_game':
             if 'YANDEX.CONFIRM' in intents:
                 return person(event, appState.get('step'), 'kupol')
             if 'YANDEX.REJECT' in intents:
-                return n.clear_app_state(appState, sessionState)       
+                return n.welcome(state=sessionState, appStateClear=True, appState=appState)      
 
         if context=='welcome':
             print('YANDEX.CONFIRM' in intents, )
@@ -60,7 +58,7 @@ def handler(event, context):
                 if user_location is None and geo_asked==False:
                     return n.ask_geo(state=sessionState)
                 if user_location is not None:
-                    return n.how_far_from_kremlin(sState=sessionState, aState=appState, user_location=user_location)
+                    return n.how_far_from_kremlin(sessionState=sessionState, appState=appState, user_location=user_location)
             if 'YANDEX.REJECT' in intents:
                     return n.bye()
 
@@ -70,7 +68,7 @@ def handler(event, context):
 
         # начало. где находится пользоваетль
         if context=='ask_geo':
-            return n.how_far_from_kremlin(sState=sessionState, aState=appState, user_location=user_location)
+            return n.how_far_from_kremlin(sessionState=sessionState, appState=appState, user_location=user_location)
 
         if context=='within_kremlin':
             return n.say('Начать экскурсию')
@@ -80,9 +78,16 @@ def handler(event, context):
 
         if context=='somewhere':
             if 'YANDEX.CONFIRM' in intents:
-                return person(event, appState.get('step'), 'kupol')
+                return n.quest_begin(sessionState=sessionState, appState=appState)
             if 'YANDEX.REJECT' in intents:
                 return n.bye()
+
+        if context=='quest_begin':
+            return
+
+
+
+
 
         # Если есть данные в appState
         # if story_mode==True:
