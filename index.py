@@ -2,7 +2,6 @@
 from fun import fallback
 from person import person
 import navigation as n
-import game
 
 def handler(event, context):
 
@@ -32,7 +31,7 @@ def handler(event, context):
     print('>>>request: ', request, appId)
 
     # skill logic
-    def worker(request, sessionState, appState):
+    def worker(request, sessionState, appState, event):
         intents = request.get('nlu',{}).get('intents', {})
         command = request.get('command')
         context = sessionState.get('context')
@@ -105,7 +104,7 @@ def handler(event, context):
         return n.fallback(command)
 
     # skill answer
-    response = worker(request, sessionState, appState)
+    response = worker(request, sessionState, appState, event)
     print('>>>response: ', response, appId)
 
     return {

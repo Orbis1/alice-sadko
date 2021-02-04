@@ -12,6 +12,7 @@ def make_response(
     place_next=None,
     event={}
     ):
+    print(event)
     appState = event['state']['application']
     # sessionState = event['state']['session']
     response = {
@@ -67,7 +68,7 @@ def make_only_response(
 
 def fallback(event):
     text="Извините данный диалог в разработке"
-    return make_response(text,end_session= True)
+    return make_response(text,end_session= True, event=event)
 
 def button(title, payload=None, url=None, hide=False):
     button = {
@@ -85,7 +86,7 @@ def image_gallery(image_ids,description):
         'image_id':image_ids,
         'description':description
     }
-def end_session1(text=None,tts=None,step=None,place=None,status=None):
+def end_session1(text=None,tts=None,step=None,place=None,status=None, event={}):
     if text is None:
         text='''Скоро сказка сказывается, да не скоро дело делается.\
          Я и Садко, будем ждать тебя. Возвращайся скорей!'''
@@ -95,7 +96,7 @@ def end_session1(text=None,tts=None,step=None,place=None,status=None):
         tts=tts
     end_session11=True
     return make_response(text= text,\
-    tts=tts , end_session=end_session11,step=step, place=place,status=status)
+    tts=tts , end_session=end_session11,step=step, place=place,status=status, event=event)
 
 def text_to_resp(source,ind_1=None,ind_2=None,card=None,obj_3=None,obj_4=None):
     source=source
@@ -151,13 +152,13 @@ def help_4_zagadka (event,ind_1,povtor=None):
     if status=="zagadka" or status=='zag_not_end':
         param=text_to_resp(pers_help,ind_1,0,card=card_999)
         return make_response(text=param[0],tts=param[1], buttons=buttons,step=step, place=place,
-                status=param[2], card=param[3])
+                status=param[2], card=param[3], event=event)
     elif status=='help_not_end':
         param=text_to_resp(pers_help,ind_1,1,card=True)
         return make_response(text=param[0],tts=param[1], buttons=buttons,step=step, place=place,
-        status=param[2], card=param[3])
+        status=param[2], card=param[3], event=event)
     elif status=='help_end':
         param=text_to_resp(pers_help,ind_1,2)
-        return end_session1(text=param[0],tts=param[1],step=0,place=place,status=param[2])
+        return end_session1(text=param[0],tts=param[1],step=0,place=place,status=param[2],event=event)
     else:
         return fallback(event)
