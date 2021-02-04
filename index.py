@@ -30,7 +30,7 @@ def handler(event, context):
         story_mode = sessionState.get('story_mode')
 
         if new_session==True: 
-            if story_mode==True or appState.get('step') is not None:
+            if appState.get('place')!='null' and appState.get('place') is not None:
                 return n.continue_game(sessionState)
             else:
                 return n.welcome(state=sessionState)
@@ -52,7 +52,7 @@ def handler(event, context):
                     return n.bye()
 
         # запрос геолокации
-        if user_location is None and geo_asked==False:
+        if user_location is None and geo_asked==False and context!='quest_begin':
             return n.ask_geo(state=sessionState)
 
         # начало. где находится пользоваетль
@@ -81,11 +81,13 @@ def handler(event, context):
 
     # skill answer
     response = worker(request, sessionState, appState, event)
-    print('>>>response: ', response, appId)
 
-    return {
+    webhook_response={
         'response': response,
         'session_state': sessionState,
         'application_state': appState,
         'version': event['version']
     }
+    print('>>>webhook_response: ', webhook_response, appId)
+
+    return webhook_response

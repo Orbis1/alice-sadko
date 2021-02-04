@@ -10,10 +10,12 @@ def make_response(
     directives=False,
     end_session=False,
     place_next=None,
-    event={}
+    event={},
+    context=None
     ):
     appState = event['state']['application']
-    # sessionState = event['state']['session']
+    sessionState = event['state']['session']
+
     response = {
             'text':text,
             'tts': tts if tts is not None else text,
@@ -28,18 +30,10 @@ def make_response(
     if directives is True:
         response['directives']={"request_geolocation": {}}
 
-    # webhook_response={
-    #     'response': response,
-    #     "application_state": {
-    #         "step": step,
-    #         "place_seen": place,
-    #         "status": status,
-    #     },
-    #     'version':'1.0',
-    # }
     if step is not None: appState['step'] = step
     if place is not None: appState['place_seen'] = place
     if status is not None: appState['status'] = status
+    if context is not None: sessionState['context'] = context
     
     print (response)
     return response
