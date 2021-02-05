@@ -7,4 +7,8 @@ def next_place(place, quest_order=quest_order):
   next = False if current == len(quest_order)-1 else quest_order[current+1]
   
 
-print(quest_order[0])
+myTuple = ("John", "Peter", "Vicky")
+
+x = place_seen +'\n'+ 'ss'
+
+print(x)

@@ -68,7 +68,7 @@ def handler(event, context):
 
         if context=='somewhere':
             if 'YANDEX.CONFIRM' in intents:
-                return navigation(sessionState=sessionState, appState=appState)
+                return navigation(appState, sessionState, intents, user_location)
             if 'YANDEX.REJECT' in intents:
                 return intro.bye()
 
@@ -76,7 +76,7 @@ def handler(event, context):
             return person(event=event, step=appState['step'], place=appState['place'], status=appState.get('status'))
 
         if context=='navigation':
-            return navigation(appState, sessionState, intents)
+            return navigation(appState, sessionState, intents, user_location)
 
         if 'help' in intents:
             return intro.say_help()
