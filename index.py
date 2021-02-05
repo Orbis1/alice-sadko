@@ -68,7 +68,7 @@ def handler(event, context):
 
         if context=='somewhere':
             if 'YANDEX.CONFIRM' in intents:
-                return intro.intro(sessionState=sessionState, appState=appState)
+                return navigation(sessionState=sessionState, appState=appState)
             if 'YANDEX.REJECT' in intents:
                 return intro.bye()
 
