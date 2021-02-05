@@ -131,8 +131,8 @@ def kupol_story(state):
     buttons=ph.hi['buttons']
   )
 
-def quest_begin(appState, sessionState):
-  sessionState['context'] = 'quest_begin'
+def quest(appState, sessionState):
+  sessionState['context'] = 'quest'
   appState['step'] = 0
   appState['place'] = 'kupol'
   to_target = sights['kupol']['to_tip_name'] 

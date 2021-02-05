@@ -1,5 +1,9 @@
 from fun import make_only_response
 from resource import quest_order, find_object
+from intro import get_distance_to_object
+from sights import sights
+
+
 
 def give_direction(data, sessionState, appState):
   # Контент для ответа
@@ -64,12 +68,40 @@ def give_direction_last(data, sessionState, appState, add_text=None):
   # картинка??
   buttons = [
     { 'title': "Где я?", 'hide': False },
-    { 'title': "Я на месте?", 'hide': False },
+    { 'title': "Я на месте", 'hide': False },
     { 'title': "Повтори", 'hide': False },
   ]
 
   # Работа со стейтом
   sessionState['nav_context'] = 'give_direction_last'
+
+  nav_step = sessionState.get('nav_step')
+  if nav_step is None or nav_step=='null':
+    sessionState['nav_step'] = 1
+  else:
+    sessionState['nav_step'] += 1
+  
+  return make_only_response(
+    text=txt,
+    # tts=tts,
+    buttons=buttons
+  )
+
+def switch_to_pers(data, sessionState, appState):
+  # Контент для ответа
+  txt = data[0]
+  tts = data[1]
+  
+  # картинка??
+  buttons = [
+    { 'title': "Где я?", 'hide': False },
+    { 'title': "Я готов", 'hide': False },
+    { 'title': "Повтори", 'hide': False },
+  ]
+
+  # Работа со стейтом
+  sessionState['nav_context'] = 'give_direction_last'
+  sessionState['context'] = 'quest'
 
   nav_step = sessionState.get('nav_step')
   if nav_step is None or nav_step=='null':
@@ -89,6 +121,7 @@ def navigation(appState, sessionState, intents, user_location):
   place_seen = appState.get('place_seen')
   place = quest_order[0] if place_seen is None or place_seen=='null' else place_seen
   nav_context = sessionState.get('nav_context')
+  story_mode=sessionState.get('story_mode')
 
   sessionState['context'] = 'navigation'
 
@@ -112,16 +145,36 @@ def navigation(appState, sessionState, intents, user_location):
     if 'YANDEX.REJECT' in intents:
       return give_direction_last(data[3], sessionState, appState)
 
-
   # обработка "Где я?"
+  if 'where_am_i' in intents:
+    if user_location is not None and user_location['accuracy'] < 50 and story_mode==False:
+    # если геолокация есть и погрешность не больше 50 метров мы не в режиме истории
+      target = sights[place]
+      distance = get_distance_to_object(user_location, target['location'])
+      if distance > 50:
+        return give_direction_last(data[4], sessionState, appState)
+      if distance < 50:
+        return switch_to_pers(data[5], sessionState, appState)
+    else:
+      if story_mode==True:
+      # если мы в режиме истории, то переходим к следующему объекту
+        return switch_to_pers(data[5], sessionState, appState)
+      else:
+      # если геолокации нет или слишком большая погредшность, то даём подсказку
+        return give_direction_last(data[4], sessionState, appState)
+
+
+    
 
   # обработка "Я на месте"
+  if 'i_am_here' in intents:
+    return
 
   
   return make_only_response(
     text='жопа-жопа-жопа-жопа',
   )
 
-  
+
 
 

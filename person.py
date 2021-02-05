@@ -4,7 +4,7 @@ from resource import fallback_answer,answer, pers_step, pers_zag,pers_sprav
 
 
 def person(event,step,place, status=None, id_zag=None):
-    event['state']['context']='quest_begin'
+    event['state']['context']='quest'
     intents=event['request'].get('nlu',{}).get('intents')
     # if step==0:
 #         Выбираем ИД загадки

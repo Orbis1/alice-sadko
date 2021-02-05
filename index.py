@@ -53,7 +53,7 @@ def handler(event, context):
                     return intro.bye()
 
         # запрос геолокации
-        if user_location is None and geo_asked==False and context!='quest_begin':
+        if user_location is None and geo_asked==False and context!='quest':
             return intro.ask_geo(state=sessionState)
 
         # начало. где находится пользоваетль
@@ -72,7 +72,7 @@ def handler(event, context):
             if 'YANDEX.REJECT' in intents:
                 return intro.bye()
 
-        if context=='quest_begin':
+        if context=='quest':
             return person(event=event, step=appState['step'], place=appState['place'], status=appState.get('status'))
 
         if context=='navigation':
