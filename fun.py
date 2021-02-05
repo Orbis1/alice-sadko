@@ -136,29 +136,31 @@ def help_4_zagadka (event,ind_1,povtor=None):
     place=event.get('state').get('application').get('place_seen')
     step=event.get('state').get('application').get('step')
     status=event.get('state').get('application').get('status')
-    if ind_1==999 and status!='help_not_end':
-        buttons=[button('Да', hide=True),button('Нет', hide=True)]
-        card_999=True
-    elif ind_1==999 and status=='help_not_end':
-        buttons=[button('Да', hide=True)]
-    else:
-        buttons=[button('Я не знаю', hide=True),button('Повтори', hide=True)]
-        card_999=None
     if povtor:
         if status=='help_not_end':
             status='zagadka'
         elif status=='help_end':
             status='help_not_end'
+    if ind_1==999 and status!='help_not_end':
+        buttons=[button('Да', hide=True),button('Нет', hide=True)]
+        card_999=True
+    elif ind_1==999 and status=='help_not_end':
+        card_999=True
+        buttons=[button('Да', hide=True)]
+    else:
+        buttons=[button('Повтори', hide=True),button('Я не знаю', hide=True),button('Я знаю', hide=True)]
+        card_999=None
+
     if status=="zagadka" or status=='zag_not_end':
         param=text_to_resp(pers_help,ind_1,0,card=card_999)
         return make_response(text=param[0],tts=param[1], buttons=buttons,step=step, place=place,
-                status=param[2], card=param[3], event=event)
+                status=param[2], card=param[3])
     elif status=='help_not_end':
         param=text_to_resp(pers_help,ind_1,1,card=True)
         return make_response(text=param[0],tts=param[1], buttons=buttons,step=step, place=place,
-        status=param[2], card=param[3], event=event)
+        status=param[2], card=param[3])
     elif status=='help_end':
         param=text_to_resp(pers_help,ind_1,2)
-        return end_session1(text=param[0],tts=param[1],step=0,place=place,status=param[2],event=event)
+        return end_session1(text=param[0],tts=param[1],step=0,place=place,status=param[2])
     else:
         return fallback(event)
