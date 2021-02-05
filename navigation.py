@@ -1,8 +1,8 @@
+from person import person
 from fun import make_only_response
 from resource import quest_order, find_object
 from intro import get_distance_to_object
 from sights import sights
-
 
 
 def give_direction(data, sessionState, appState):
@@ -115,7 +115,7 @@ def switch_to_pers(data, sessionState, appState):
     buttons=buttons
   )
 
-def navigation(appState, sessionState, intents, user_location):
+def navigation(appState, sessionState, intents, user_location, event={}):
   # Запоминаем ключевые данные из state
   step = sessionState.get('nav_step', 0)
   place_seen = appState.get('place_seen')
@@ -155,21 +155,19 @@ def navigation(appState, sessionState, intents, user_location):
       if distance > 50:
         return give_direction_last(data[4], sessionState, appState)
       if distance < 50:
-        return switch_to_pers(data[5], sessionState, appState)
+        return give_direction_last(data[5], sessionState, appState)
     else:
       if story_mode==True:
       # если мы в режиме истории, то переходим к следующему объекту
-        return switch_to_pers(data[5], sessionState, appState)
+        return give_direction_last(data[5], sessionState, appState)
       else:
       # если геолокации нет или слишком большая погредшность, то даём подсказку
         return give_direction_last(data[4], sessionState, appState)
-
-
     
 
   # обработка "Я на месте"
   if 'i_am_here' in intents:
-    return
+    return person(event=event, step=appState['step'], place=appState['place_seen'], status=appState.get('status'))
 
   
   return make_only_response(

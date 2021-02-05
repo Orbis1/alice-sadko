@@ -31,14 +31,14 @@ def handler(event, context):
         story_mode = sessionState.get('story_mode')
 
         if new_session==True: 
-            if appState.get('place')!='null' and appState.get('place') is not None:
+            if appState.get('place_seen')!='null' and appState.get('place_seen') is not None:
                 return intro.continue_game(sessionState)
             else:
                 return intro.welcome(state=sessionState)
 
         if context=='continue_game':
             if 'YANDEX.CONFIRM' in intents:
-                return person(event=event, step=0, place=appState['place'], status=appState.get('status')) #?
+                return person(event=event, step=0, place=appState['place_seen'], status=appState.get('status')) #?
             if 'YANDEX.REJECT' in intents:
                 return intro.welcome(state=sessionState, appStateClear=True, appState=appState)      
 
@@ -73,10 +73,10 @@ def handler(event, context):
                 return intro.bye()
 
         if context=='quest':
-            return person(event=event, step=appState['step'], place=appState['place'], status=appState.get('status'))
+            return person(event=event, step=appState['step'], place=appState['place_seen'], status=appState.get('status'))
 
         if context=='navigation':
-            return navigation(appState, sessionState, intents, user_location)
+            return navigation(appState, sessionState, intents, user_location, event)
 
         if 'help' in intents:
             return intro.say_help()

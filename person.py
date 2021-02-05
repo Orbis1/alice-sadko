@@ -1,10 +1,11 @@
 
 from fun import help_4_zagadka, text_to_resp, make_response, fallback, button,end_session1
-from resource import fallback_answer,answer, pers_step, pers_zag,pers_sprav
+from resource import fallback_answer,answer, pers_step, pers_zag,pers_sprav, quest_order
+from navigation import navigation
 
 
 def person(event,step,place, status=None, id_zag=None):
-    event['state']['context']='quest'
+    event['state']['session']['context']='quest'
     intents=event['request'].get('nlu',{}).get('intents')
     # if step==0:
 #         Выбираем ИД загадки
@@ -34,7 +35,11 @@ def person(event,step,place, status=None, id_zag=None):
                 return make_response(text=param[0],tts=param[1], buttons=[
                     button('Да', hide=True),button('Нет', hide=True)],step=step+1, place=place,
                                     status=param[2], event=event)
-            
+        elif 'im_ready' in intents:
+            appState = event['state']['application']
+            sessionState = event['state']['session']
+            user_location = event['session'].get('location')
+            return  navigation(appState, sessionState, intents, user_location, event)
 # Обработка ответа "да"
         elif 'answer_da' in intents or 'YANDEX.CONFIRM' in intents:
             if step ==4 or step ==6:
@@ -62,11 +67,20 @@ def person(event,step,place, status=None, id_zag=None):
                     button('Да', hide=True),button('Нет', hide=True)], step=step, place=place,
                                     status=param[2], event=event)
             elif step == 5:
-                param=text_to_resp(pers_zag,pers_sprav[place][1],1,obj_3=True)           
-                return make_response(text=param[0],tts=param[1],buttons=[
-                    button('Купол', hide=True),button('Звонница', hide=True),
-                    button('Собор', hide=True),], step=0, place=place,
-                    status=param[2],place_next=param[3], event=event)    
+                param=text_to_resp(pers_zag,pers_sprav[place][1],1,obj_3=True)
+                return make_response(
+                    text=param[0],
+                    tts=param[1],
+                    step=0,
+                    place=getNextPlace(place),
+                    status=param[2],
+                    place_next=param[3], 
+                    event=event,
+                    # context='navigation',
+                    buttons=[{ 'title': "Я готов", 'hide': True }],
+                    # nav_context='give_direction'
+
+                    )    
             elif step == 4:
                 return help_4_zagadka (event,pers_sprav[place][0])
             elif step==6:
@@ -104,10 +118,17 @@ def person(event,step,place, status=None, id_zag=None):
                                     status=param[2], event=event)
         elif answer[place][pers_sprav[place][1]] in intents and step==6:
                 param=text_to_resp(pers_zag,pers_sprav[place][1],1,obj_3=True)
-                return make_response(text=param[0],tts=param[1],buttons=[
-            button('Купол', hide=True),button('Звонница', hide=True),
-            button('Собор', hide=True),], step=0, place=place,
-                                    status=param[2],place_next=param[3], event=event)
+                return make_response(
+                    text=param[0],
+                    tts=param[1],
+                    step=0, place=getNextPlace(place),
+                    status=param[2],
+                    place_next=param[3], 
+                    event=event,
+                    # context='navigation',
+                    buttons=[{ 'title': "Я готов", 'hide': True }],
+                    # nav_context='give_direction'
+                )
 # Обработка else
 
         else:
@@ -128,3 +149,14 @@ def person(event,step,place, status=None, id_zag=None):
                 return fallback(event)
             return fallback(event)
         return fallback(event)
+
+def getNextPlace(place):
+    place_next=''
+    place_index = quest_order.index(place)
+    if place_index+1 <= len(quest_order)-1:
+        # переход к следующему объекту
+        place_next=quest_order[place_index+1]
+    else:
+        # все объекты закончились
+        place_next='end'
+    return place_next

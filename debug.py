@@ -11,4 +11,4 @@ myTuple = ("John", "Peter", "Vicky")
 
 x = place_seen +'\n'+ 'ss'
 
-print(x)
+print(len(quest_order))

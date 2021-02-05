@@ -134,7 +134,7 @@ def kupol_story(state):
 def quest(appState, sessionState):
   sessionState['context'] = 'quest'
   appState['step'] = 0
-  appState['place'] = 'kupol'
+  appState['place_seen'] = 'kupol'
   to_target = sights['kupol']['to_tip_name'] 
   txt = 'Покатился клубок к {}. Следуй за ним. Как дойдешь - скажи "Я на месте". А пока идём могу тебе про это место рассказать. Интересно?'.format(to_target)
   return make_only_response(
