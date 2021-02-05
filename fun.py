@@ -12,7 +12,8 @@ def make_response(
     place_next=None,
     event={},
     context=None,
-    nav_context=None
+    nav_context=None,
+    nav_step=None
     ):
     appState = event['state']['application']
     sessionState = event['state']['session']
@@ -36,6 +37,7 @@ def make_response(
     if status is not None: appState['status'] = status
     if context is not None: sessionState['context'] = context
     if nav_context is not None: sessionState['nav_context'] = nav_context
+    if nav_step is not None: sessionState['nav_step'] = nav_step
     
     print (response)
     return response

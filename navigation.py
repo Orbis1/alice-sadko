@@ -121,7 +121,7 @@ def navigation(appState, sessionState, intents, user_location, event={}):
   place_seen = appState.get('place_seen')
   place = quest_order[0] if place_seen is None or place_seen=='null' else place_seen
   nav_context = sessionState.get('nav_context')
-  story_mode=sessionState.get('story_mode')
+  story_mode = sessionState.get('story_mode')
 
   sessionState['context'] = 'navigation'
   appState['place_seen'] = place

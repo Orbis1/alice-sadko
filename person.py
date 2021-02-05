@@ -1,7 +1,7 @@
 
 from fun import help_4_zagadka, text_to_resp, make_response, fallback, button,end_session1
 from resource import fallback_answer,answer, pers_step, pers_zag,pers_sprav, quest_order
-from navigation import navigation
+# from navigation import navigation
 
 
 def person(event,step,place, status=None, id_zag=None):
@@ -35,11 +35,11 @@ def person(event,step,place, status=None, id_zag=None):
                 return make_response(text=param[0],tts=param[1], buttons=[
                     button('Да', hide=True),button('Нет', hide=True)],step=step+1, place=place,
                                     status=param[2], event=event)
-        elif 'im_ready' in intents:
-            appState = event['state']['application']
-            sessionState = event['state']['session']
-            user_location = event['session'].get('location')
-            return  navigation(appState, sessionState, intents, user_location, event)
+        # elif 'im_ready' in intents:
+        #     appState = event['state']['application']
+        #     sessionState = event['state']['session']
+        #     user_location = event['session'].get('location')
+        #     return  navigation(appState, sessionState, intents, user_location, event)
 # Обработка ответа "да"
         elif 'answer_da' in intents or 'YANDEX.CONFIRM' in intents:
             if step ==4 or step ==6:
@@ -78,7 +78,8 @@ def person(event,step,place, status=None, id_zag=None):
                     event=event,
                     # context='navigation',
                     buttons=[{ 'title': "Я готов", 'hide': True }],
-                    # nav_context='give_direction'
+                    # nav_context='give_direction',
+                    nav_step=0
 
                     )    
             elif step == 4:
@@ -128,6 +129,7 @@ def person(event,step,place, status=None, id_zag=None):
                     # context='navigation',
                     buttons=[{ 'title': "Я готов", 'hide': True }],
                     # nav_context='give_direction'
+                    nav_step=0
                 )
 # Обработка else
 
