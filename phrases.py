@@ -15,6 +15,14 @@ quest = {
     ]
   }
 
+intro = {
+  'buttons': [
+      { 'title': "Повтори", 'hide': True },
+      { 'title': "Да", 'hide': True },
+      { 'title': "Нет", 'hide': True },
+    ]
+  }
+
 needgeo = {
   'txt': 'Нужен доступ к гео-локации',
   'tts': 'Нужен доступ к гео-локации'

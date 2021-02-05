@@ -1,7 +1,8 @@
 # Fake 
 from fun import fallback
 from person import person
-import navigation as n
+import intro
+from navigation import navigation
 
 def handler(event, context):
 
@@ -31,53 +32,56 @@ def handler(event, context):
 
         if new_session==True: 
             if appState.get('place')!='null' and appState.get('place') is not None:
-                return n.continue_game(sessionState)
+                return intro.continue_game(sessionState)
             else:
-                return n.welcome(state=sessionState)
+                return intro.welcome(state=sessionState)
 
         if context=='continue_game':
             if 'YANDEX.CONFIRM' in intents:
-                return person(event=event, step=0, place=appState['place'], status=appState.get('status'))
+                return person(event=event, step=0, place=appState['place'], status=appState.get('status')) #?
             if 'YANDEX.REJECT' in intents:
-                return n.welcome(state=sessionState, appStateClear=True, appState=appState)      
+                return intro.welcome(state=sessionState, appStateClear=True, appState=appState)      
 
         if context=='welcome':
             if 'YANDEX.CONFIRM' in intents:
                 # запрос геолокации
                 if user_location is None and geo_asked==False:
-                    return n.ask_geo(state=sessionState)
+                    return intro.ask_geo(state=sessionState)
                 if user_location is not None:
-                    return n.how_far_from_kremlin(sessionState=sessionState, appState=appState, user_location=user_location)
+                    return intro.how_far_from_kremlin(sessionState=sessionState, appState=appState, user_location=user_location)
             if 'YANDEX.REJECT' in intents:
-                    return n.bye()
+                    return intro.bye()
 
         # запрос геолокации
         if user_location is None and geo_asked==False and context!='quest_begin':
-            return n.ask_geo(state=sessionState)
+            return intro.ask_geo(state=sessionState)
 
         # начало. где находится пользоваетль
         if context=='ask_geo':
-            return n.how_far_from_kremlin(sessionState=sessionState, appState=appState, user_location=user_location)
+            return intro.how_far_from_kremlin(sessionState=sessionState, appState=appState, user_location=user_location)
 
         if context=='within_kremlin':
-            return n.say('Начать экскурсию')
+            return intro.say('Начать экскурсию')
 
         if context=='around_kremlin':
-            return n.say('Подойти к воротам')
+            return intro.say('Подойти к воротам')
 
         if context=='somewhere':
             if 'YANDEX.CONFIRM' in intents:
-                return n.quest_begin(sessionState=sessionState, appState=appState)
+                return intro.intro(sessionState=sessionState, appState=appState)
             if 'YANDEX.REJECT' in intents:
-                return n.bye()
+                return intro.bye()
 
         if context=='quest_begin':
             return person(event=event, step=appState['step'], place=appState['place'], status=appState.get('status'))
 
-        if 'help' in intents:
-            return n.say_help()
+        if context=='navigation':
+            return navigation(appState, sessionState, intents)
 
-        return n.fallback(command)
+        if 'help' in intents:
+            return intro.say_help()
+
+        return intro.fallback(command)
 
     # skill answer
     response = worker(request, sessionState, appState, event)

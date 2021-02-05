@@ -263,3 +263,5 @@ fallback_answer={
     ]
     
 }
+
+quest_order = ['kupol', 'zvonnitsa', 'cathedral']
