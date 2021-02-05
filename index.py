@@ -37,7 +37,7 @@ def handler(event, context):
 
         if context=='continue_game':
             if 'YANDEX.CONFIRM' in intents:
-                return person(event=event, step=appState['step'], place=appState['place'], status=appState.get('status'))
+                return person(event=event, step=0, place=appState['place'], status=appState.get('status'))
             if 'YANDEX.REJECT' in intents:
                 return n.welcome(state=sessionState, appStateClear=True, appState=appState)      
 
