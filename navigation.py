@@ -124,6 +124,7 @@ def navigation(appState, sessionState, intents, user_location):
   story_mode=sessionState.get('story_mode')
 
   sessionState['context'] = 'navigation'
+  appState['place_seen'] = place
 
   data = find_object[place]
 
