@@ -5,15 +5,6 @@ import navigation as n
 
 def handler(event, context):
 
-
-   
-    # print (event)
-    # intents = event['request'].get('nlu',{}).get('intents')
-    # text = {'Куку тест функции'}
-    # Перенести
-    # step=event.get('state').get('application').get('step')
-    # status=event.get('state').get('application').get('status')
-
     # session
     new_session = event['session']['new']
     user_location = event['session'].get('location')
@@ -39,19 +30,18 @@ def handler(event, context):
         story_mode = sessionState.get('story_mode')
 
         if new_session==True: 
-            if story_mode==True or appState.get('step') is not None:
+            if appState.get('place')!='null' and appState.get('place') is not None:
                 return n.continue_game(sessionState)
             else:
                 return n.welcome(state=sessionState)
 
         if context=='continue_game':
             if 'YANDEX.CONFIRM' in intents:
-                return person(event, appState.get('step'), 'kupol')
+                return person(event=event, step=0, place=appState['place'], status=appState.get('status'))
             if 'YANDEX.REJECT' in intents:
                 return n.welcome(state=sessionState, appStateClear=True, appState=appState)      
 
         if context=='welcome':
-            print('YANDEX.CONFIRM' in intents, )
             if 'YANDEX.CONFIRM' in intents:
                 # запрос геолокации
                 if user_location is None and geo_asked==False:
@@ -62,7 +52,7 @@ def handler(event, context):
                     return n.bye()
 
         # запрос геолокации
-        if user_location is None and geo_asked==False:
+        if user_location is None and geo_asked==False and context!='quest_begin':
             return n.ask_geo(state=sessionState)
 
         # начало. где находится пользоваетль
@@ -82,21 +72,7 @@ def handler(event, context):
                 return n.bye()
 
         if context=='quest_begin':
-            return person(event=event, step=appState['step'], place=appState['place'], status=appState.get('status') )
-
-
-
-
-
-        # Если есть данные в appState
-        # if story_mode==True:
-        #     if context=='somewhere':
-        #         if 'YANDEX.CONFIRM' in intents:
-        #             return person(event, appState.get('step'), 'kupol')
-        #         if 'YANDEX.REJECT' in intents:
-        #             return n.bye()
-        #     else:
-        #         return person(event, appState.get('step'), 'kupol')
+            return person(event=event, step=appState['step'], place=appState['place'], status=appState.get('status'))
 
         if 'help' in intents:
             return n.say_help()
@@ -105,11 +81,13 @@ def handler(event, context):
 
     # skill answer
     response = worker(request, sessionState, appState, event)
-    print('>>>response: ', response, appId)
 
-    return {
+    webhook_response={
         'response': response,
         'session_state': sessionState,
         'application_state': appState,
         'version': event['version']
     }
+    print('>>>webhook_response: ', webhook_response, appId)
+
+    return webhook_response

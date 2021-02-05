@@ -10,11 +10,12 @@ def make_response(
     directives=False,
     end_session=False,
     place_next=None,
-    event={}
+    event={},
+    context=None
     ):
-    print(event)
     appState = event['state']['application']
-    # sessionState = event['state']['session']
+    sessionState = event['state']['session']
+
     response = {
             'text':text,
             'tts': tts if tts is not None else text,
@@ -29,19 +30,12 @@ def make_response(
     if directives is True:
         response['directives']={"request_geolocation": {}}
 
-    # webhook_response={
-    #     'response': response,
-    #     "application_state": {
-    #         "step": step,
-    #         "place_seen": place,
-    #         "status": status,
-    #     },
-    #     'version':'1.0',
-    # }
     if step is not None: appState['step'] = step
     if place is not None: appState['place_seen'] = place
     if status is not None: appState['status'] = status
-
+    if context is not None: sessionState['context'] = context
+    
+    print (response)
     return response
 
 def make_only_response(
@@ -80,12 +74,14 @@ def button(title, payload=None, url=None, hide=False):
     if url is not None:
         button['url'] = url
     return button
-def image_gallery(image_ids,description):
+
+def big_image(image_ids,description):
     return {
         'type':'BigImage',
-        'image_id':image_ids,
-        'description':description
+        'image_id': image_ids,
+        'description': description
     }
+
 def end_session1(text=None,tts=None,step=None,place=None,status=None, event={}):
     if text is None:
         text='''Скоро сказка сказывается, да не скоро дело делается.\
@@ -105,7 +101,7 @@ def text_to_resp(source,ind_1=None,ind_2=None,card=None,obj_3=None,obj_4=None):
         tts=source[ind_1][ind_2][1]
         status=source[ind_1][ind_2][2]
         if card is not None:
-            card=image_gallery(source[ind_1][ind_2][3],description=text)
+            card=big_image(source[ind_1][ind_2][3],description=text)
         if obj_3 is not None:
             obj_3=source[ind_1][ind_2][3]
         if obj_4 is not None:
@@ -115,7 +111,7 @@ def text_to_resp(source,ind_1=None,ind_2=None,card=None,obj_3=None,obj_4=None):
         tts=source[ind_1][1]
         status=source[ind_1][2]
         if card is not None:
-            card=image_gallery(source[ind_1][3],description=text)
+            card=big_image(source[ind_1][3],description=text)
         if obj_3 is not None:
             obj_3=source[ind_1][3]
         if obj_4 is not None:
@@ -125,7 +121,7 @@ def text_to_resp(source,ind_1=None,ind_2=None,card=None,obj_3=None,obj_4=None):
         tts=source[1]
         status=source[2]
         if card is not None:
-            card=image_gallery(source[3],description=text) 
+            card=big_image(source[3],description=text) 
         if obj_3 is not None:
             obj_3=source[3]
         if obj_4 is not None:
