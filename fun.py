@@ -154,13 +154,14 @@ def help_4_zagadka (event,ind_1,povtor=None):
     if status=="zagadka" or status=='zag_not_end':
         param=text_to_resp(pers_help,ind_1,0,card=card_999)
         return make_response(text=param[0],tts=param[1], buttons=buttons,step=step, place=place,
-                status=param[2], card=param[3])
+                status=param[2], card=param[3],event=event)
     elif status=='help_not_end':
         param=text_to_resp(pers_help,ind_1,1,card=True)
         return make_response(text=param[0],tts=param[1], buttons=buttons,step=step, place=place,
-        status=param[2], card=param[3])
+        status=param[2], card=param[3],event=event)
     elif status=='help_end':
         param=text_to_resp(pers_help,ind_1,2)
         return end_session1(text=param[0],tts=param[1],step=0,place=place,status=param[2])
     else:
         return fallback(event)
+

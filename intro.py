@@ -76,7 +76,7 @@ def how_far_from_kremlin(appState, sessionState, user_location):
         elif distance >= 1000:
             return somewhere(appState, sessionState)
     else:
-        return somewhere(appState, sessionState)
+      return somewhere(appState, sessionState)
       
 
 def within_kremlin(appState, sessionState):
@@ -96,7 +96,7 @@ def around_kremlin(appState, sessionState):
   )
 
 def somewhere(appState, sessionState):
-  txt = 'Вы очень далеко от Новгородского Кремля. Продолжить в режиме повествования?'
+  txt = 'Далеко ты от кремля Новгородского. Продолжить в режиме повествования?'
   sessionState['context'] = 'somewhere'
   sessionState['story_mode'] = True
   appState['step'] = 0
