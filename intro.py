@@ -65,10 +65,10 @@ def how_far_from_kremlin(appState, sessionState, user_location):
             return within_kremlin(appState, sessionState) 
         if 300 <= distance < 1000: 
             return around_kremlin(appState, sessionState)
-        distance >= 1000:
-            return somewhere(appState, sessionState)
+        if distance >= 1000: 
+          return somewhere(appState, sessionState)
     else:
-        return somewhere(appState, sessionState)
+      return somewhere(appState, sessionState)
       
 
 def within_kremlin(appState, sessionState):
