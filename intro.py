@@ -80,7 +80,7 @@ def how_far_from_kremlin(appState, sessionState, user_location):
       
 
 def within_kremlin(appState, sessionState):
-  txt = 'Вы на территории Новгодоского Кремля. Рассказать про Кремль?'
+  txt = 'Вы находитесь на территории Новгородского Кремля. Рассказать про Кремль??'
   sessionState['context'] = 'within_kremlin'
   return make_only_response(
     text=txt,
