@@ -1,0 +1,5 @@
+root:
+    $i_am_here
+$i_am_here:
+    Я? на месте
+    Я тут

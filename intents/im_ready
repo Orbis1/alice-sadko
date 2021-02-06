@@ -1,0 +1,12 @@
+root:
+    $im_ready
+$im_ready:
+    %lemma
+    я? готов? я готов
+    готов? готов
+    готова? готова
+    я? готова? я готова
+    im? ready? im ready 
+    i am ready
+    ready? ready
+    айм реди

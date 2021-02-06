@@ -1,73 +1,100 @@
 # Fake 
 from fun import fallback
 from person import person
-import navigation as n
-import game
+import intro
+from navigation import navigation
 
 def handler(event, context):
-
-
-   
-    # print (event)
-    # intents = event['request'].get('nlu',{}).get('intents')
-    # text = {'Куку тест функции'}
-    # Перенести
-    # step=event.get('state').get('application').get('step')
-    # status=event.get('state').get('application').get('status')
 
     # session
     new_session = event['session']['new']
     user_location = event['session'].get('location')
+    appId = event['session']['application'].get('application_id', None)
+    print('>>>event: ', event, appId)
 
     # state
     appState = event['state']['application']
     sessionState = event['state']['session']
+    print('>>>sessionState: ', sessionState, appId)
+    print('>>>appState: ', appState, appId)
 
     # request
     request = event['request']
+    print('>>>request: ', request, appId)
 
     # skill logic
-    def worker(request, sessionState, appState):
+    def worker(request, sessionState, appState, event):
         intents = request.get('nlu',{}).get('intents', {})
-        command = request['command']
+        command = request.get('command')
         context = sessionState.get('context')
         geo_asked = sessionState.get('geo_asked', False)
+        story_mode = sessionState.get('story_mode')
 
-        if new_session: return n.welcome(state=sessionState, context='welcome')
-
-        if user_location is None:
-            if geo_asked==False:
-                return n.ask_geo(state=sessionState)
+        if new_session==True: 
+            if appState.get('place_seen')!='null' and appState.get('place_seen') is not None:
+                return intro.continue_game(sessionState)
             else:
-                 # начало игры без геолокации
-                return game.start(request, sessionState, appState,  with_geo=False)
-        else:
-            # начало игры c геолокацией
-            return game.start(request, sessionState, appState, with_geo=True)
+                return intro.welcome(state=sessionState)
 
-        if 'YANDEX.CONFIRM' in intents:
-            if context=='welcome': return n.say('Переход к запросу навигации')
+        if context=='continue_game':
+            if 'YANDEX.CONFIRM' in intents:
+                return person(event=event, step=0, place=appState['place_seen'], status=appState.get('status')) #?
+            if 'YANDEX.REJECT' in intents:
+                return intro.welcome(state=sessionState, appStateClear=True, appState=appState)      
 
-        if 'YANDEX.REJECT' in intents:
-            if context=='welcome': return n.say('Выход из квеста')
+        if context=='welcome':
+            if 'YANDEX.CONFIRM' in intents:
+                # запрос геолокации
+                if user_location is None and geo_asked==False:
+                    return intro.ask_geo(state=sessionState)
+                if user_location is not None:
+                    return intro.how_far_from_kremlin(sessionState=sessionState, appState=appState, user_location=user_location)
+            if 'YANDEX.REJECT' in intents:
+                    return intro.bye()
+
+        # запрос геолокации
+        if user_location is None and geo_asked==False and context!='quest':
+            return intro.ask_geo(state=sessionState)
+
+        # начало. где находится пользоваетль
+        if context=='ask_geo':
+            return intro.how_far_from_kremlin(sessionState=sessionState, appState=appState, user_location=user_location)
+
+        if context=='within_kremlin':
+            return intro.say('Начать экскурсию')
+
+        if context=='around_kremlin':
+            return intro.say('Подойти к воротам')
+
+        if context=='somewhere':
+            if 'YANDEX.CONFIRM' in intents:
+                return navigation(appState, sessionState, intents, user_location)
+            if 'YANDEX.REJECT' in intents:
+                return intro.bye()
+
+        if 'im_ready' in intents:
+            return navigation(appState, sessionState, intents, user_location, event)
+
+        if context=='quest':
+            return person(event=event, step=appState['step'], place=appState['place_seen'], status=appState.get('status'))
+
+        if context=='navigation':
+            return navigation(appState, sessionState, intents, user_location, event)
 
         if 'help' in intents:
-            return n.say_help()
+            return intro.say_help()
 
-        return n.fallback(command)
+        return intro.fallback(command)
 
     # skill answer
-    response = worker(request, sessionState, appState)
+    response = worker(request, sessionState, appState, event)
 
-    return {
+    webhook_response={
         'response': response,
         'session_state': sessionState,
         'application_state': appState,
         'version': event['version']
     }
+    print('>>>webhook_response: ', webhook_response, appId)
 
-    
-
-
-
-
+    return webhook_response

@@ -1,13 +1,14 @@
-state = {
-  "session":{
-    "location2": {
-      "lat": 55.753215,
-      "lon": 37.622504,
-      "accuracy": 15000.0
-    },
-  }
-}
+quest_order = ['kupol', 'zvonnitsa', 'cathedral']
 
-a = state["session"].get('location', {})
+place_seen = 'kupol'
 
-print(a)
+def next_place(place, quest_order=quest_order):
+  current = quest_order.index(place)
+  next = False if current == len(quest_order)-1 else quest_order[current+1]
+  
+
+myTuple = ("John", "Peter", "Vicky")
+
+x = place_seen +'\n'+ 'ss'
+
+print(len(quest_order))

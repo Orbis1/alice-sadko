@@ -1,44 +1,179 @@
+from person import person
 from fun import make_only_response
-import phrases as ph
+from resource import quest_order, find_object
+from intro import get_distance_to_object
+from sights import sights
 
-def welcome(state, context):
-  state['context'] = context
+
+def give_direction(data, sessionState, appState):
+  # Контент для ответа
+  txt = data[0]
+  tts = data[1]
+  # картинка??
+  buttons = [
+    { 'title': "Повтори", 'hide': False },
+    { 'title': "Да", 'hide': False },
+    { 'title': "Нет", 'hide': False },
+  ]
+
+  # Работа со стейтом
+  sessionState['nav_context'] = 'give_direction'
+
+  nav_step = sessionState.get('nav_step')
+  if nav_step is None or nav_step=='null':
+    sessionState['nav_step'] = 1
+  else:
+    sessionState['nav_step'] += 1
+  
   return make_only_response(
-    text=ph.hi['txt'],
-    buttons=ph.hi['buttons']
+    text=txt,
+    # tts=tts,
+    buttons=buttons
   )
 
-def say(txt="wawa"):
-  print(txt)
+def tell_story(data, sessionState, appState):
+  # Контент для ответа
+  txt = data[0]
+  tts = data[1]
+  # картинка??
+  buttons = [
+    { 'title': "Да", 'hide': False },
+    { 'title': "Нет", 'hide': False },
+  ]
+
+  # Работа со стейтом
+  sessionState['nav_context'] = 'tell_story'
+
+  nav_step = sessionState.get('nav_step')
+  if nav_step is None or nav_step=='null':
+    sessionState['nav_step'] = 1
+  else:
+    sessionState['nav_step'] += 1
+  
   return make_only_response(
-    text=txt
+    text=txt,
+    # tts=tts,
+    buttons=buttons
   )
 
-def say_help():
-  txt=ph.help_['txt']
+def give_direction_last(data, sessionState, appState, add_text=None):
+  # Контент для ответа
+  if add_text is not None:
+    txt = add_text[0] + '\n' + data[0]
+    tts = add_text[1] + '\n' + data[1]
+  else:
+    txt = data[0]
+    tts = data[1]
+  
+  # картинка??
+  buttons = [
+    { 'title': "Где я?", 'hide': False },
+    { 'title': "Я на месте", 'hide': False },
+    { 'title': "Повтори", 'hide': False },
+  ]
+
+  # Работа со стейтом
+  sessionState['nav_context'] = 'give_direction_last'
+
+  nav_step = sessionState.get('nav_step')
+  if nav_step is None or nav_step=='null':
+    sessionState['nav_step'] = 1
+  else:
+    sessionState['nav_step'] += 1
+  
   return make_only_response(
-    text=txt
+    text=txt,
+    # tts=tts,
+    buttons=buttons
   )
 
-def ask_geo(state):
-  state['geo_asked'] = True; 
-  state['context'] = 'ask_geo'; 
+def switch_to_pers(data, sessionState, appState):
+  # Контент для ответа
+  txt = data[0]
+  tts = data[1]
+  
+  # картинка??
+  buttons = [
+    { 'title': "Где я?", 'hide': False },
+    { 'title': "Я готов", 'hide': False },
+    { 'title': "Повтори", 'hide': False },
+  ]
+
+  # Работа со стейтом
+  sessionState['nav_context'] = 'give_direction_last'
+  sessionState['context'] = 'quest'
+
+  nav_step = sessionState.get('nav_step')
+  if nav_step is None or nav_step=='null':
+    sessionState['nav_step'] = 1
+  else:
+    sessionState['nav_step'] += 1
+  
   return make_only_response(
-    text = ph.needgeo['txt'],
-    tts = ph.needgeo['tts'],
-    directives = { 'request_geolocation': {} },
+    text=txt,
+    # tts=tts,
+    buttons=buttons
   )
 
-def start_game(state, with_geo):
-  state['context'] = 'start_game'; 
-  state['with_geo'] = with_geo; 
+def navigation(appState, sessionState, intents, user_location, event={}):
+  # Запоминаем ключевые данные из state
+  step = sessionState.get('nav_step', 0)
+  place_seen = appState.get('place_seen')
+  place = quest_order[0] if place_seen is None or place_seen=='null' else place_seen
+  nav_context = sessionState.get('nav_context')
+  story_mode = sessionState.get('story_mode')
+
+  sessionState['context'] = 'navigation'
+  appState['place_seen'] = place
+
+  data = find_object[place]
+
+  # Сказать полюзователю куда идти
+  if step == 0:
+    return give_direction(data[0], sessionState, appState)
+  
+  # Рассказать про место, куда он идёт
+  if nav_context == 'give_direction':
+    if 'YANDEX.CONFIRM' in intents:
+        return tell_story(data[1], sessionState, appState)
+    if 'YANDEX.REJECT' in intents:
+        return give_direction_last(data[3], sessionState, appState)
+
+  # Историческая справка, про то куда он идёт
+  if nav_context == 'tell_story':
+    if 'YANDEX.CONFIRM' in intents:
+      return give_direction_last(data[3], sessionState, appState, add_text=data[2])
+    if 'YANDEX.REJECT' in intents:
+      return give_direction_last(data[3], sessionState, appState)
+
+  # обработка "Где я?"
+  if 'where_am_i' in intents:
+    if user_location is not None and user_location['accuracy'] < 50 and story_mode==False:
+    # если геолокация есть и погрешность не больше 50 метров мы не в режиме истории
+      target = sights[place]
+      distance = get_distance_to_object(user_location, target['location'])
+      if distance > 50:
+        return give_direction_last(data[4], sessionState, appState)
+      if distance < 50:
+        return give_direction_last(data[5], sessionState, appState)
+    else:
+      if story_mode==True:
+      # если мы в режиме истории, то переходим к следующему объекту
+        return give_direction_last(data[5], sessionState, appState)
+      else:
+      # если геолокации нет или слишком большая погредшность, то даём подсказку
+        return give_direction_last(data[4], sessionState, appState)
+    
+
+  # обработка "Я на месте"
+  if 'i_am_here' in intents:
+    return person(event=event, step=appState['step'], place=appState['place_seen'], status=appState.get('status'))
+
+  
   return make_only_response(
-    text = ph.start['txt'],
-    tts = ph.start['tts'],
+    text='жопа-жопа-жопа-жопа',
   )
 
-def fallback(command):
-  txt='Вы молвили {}. Команда не распознана. Поробуйте ещё раз'.format(command)
-  return make_only_response(
-    text = txt,
-  )
+
+
+

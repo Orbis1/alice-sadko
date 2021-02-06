@@ -10,9 +10,14 @@ def make_response(
     directives=False,
     end_session=False,
     place_next=None,
+    event={},
     context=None,
-    geo_asked=None
+    nav_context=None,
+    nav_step=None
     ):
+    appState = event['state']['application']
+    sessionState = event['state']['session']
+
     response = {
             'text':text,
             'tts': tts if tts is not None else text,
@@ -27,17 +32,15 @@ def make_response(
     if directives is True:
         response['directives']={"request_geolocation": {}}
 
-    webhook_response={
-        'response': response,
-        "application_state": {
-            "step": step,
-            "place_seen": place,
-            "status": status,
-        },
-        'version':'1.0',
-    }
-
-    return webhook_response
+    if step is not None: appState['step'] = step
+    if place is not None: appState['place_seen'] = place
+    if status is not None: appState['status'] = status
+    if context is not None: sessionState['context'] = context
+    if nav_context is not None: sessionState['nav_context'] = nav_context
+    if nav_step is not None: sessionState['nav_step'] = nav_step
+    
+    print (response)
+    return response
 
 def make_only_response(
     text="Текст ответа здесь",
@@ -59,25 +62,11 @@ def make_only_response(
     if directives is True:
         response['directives']={"request_geolocation": {}}
 
-    return  response
-
-
-    if context is not None:
-        if webhook_response.get('session_state') is None:
-            webhook_response['session_state'] = {}
-        webhook_response['session_state'] = {'context': context};
-
-    if geo_asked is not None:
-        webhook_response['user_state_update'] = {}
-        webhook_response['user_state_update']['geo_asked'] = geo_asked      
-
-
-    print(webhook_response)
-    return  webhook_response
+    return response
 
 def fallback(event):
     text="Извините данный диалог в разработке"
-    return make_response(text,end_session= True)
+    return make_response(text,end_session= True, event=event)
 
 def button(title, payload=None, url=None, hide=False):
     button = {
@@ -89,13 +78,15 @@ def button(title, payload=None, url=None, hide=False):
     if url is not None:
         button['url'] = url
     return button
-def image_gallery(image_ids,description):
+
+def big_image(image_ids,description):
     return {
         'type':'BigImage',
-        'image_id':image_ids,
-        'description':description
+        'image_id': image_ids,
+        'description': description
     }
-def end_session1(text=None,tts=None,step=None,place=None,status=None):
+
+def end_session1(text=None,tts=None,step=None,place=None,status=None, event={}):
     if text is None:
         text='''Скоро сказка сказывается, да не скоро дело делается.\
          Я и Садко, будем ждать тебя. Возвращайся скорей!'''
@@ -105,7 +96,7 @@ def end_session1(text=None,tts=None,step=None,place=None,status=None):
         tts=tts
     end_session11=True
     return make_response(text= text,\
-    tts=tts , end_session=end_session11,step=step, place=place,status=status)
+    tts=tts , end_session=end_session11,step=step, place=place,status=status, event=event)
 
 def text_to_resp(source,ind_1=None,ind_2=None,card=None,obj_3=None,obj_4=None):
     source=source
@@ -114,7 +105,7 @@ def text_to_resp(source,ind_1=None,ind_2=None,card=None,obj_3=None,obj_4=None):
         tts=source[ind_1][ind_2][1]
         status=source[ind_1][ind_2][2]
         if card is not None:
-            card=image_gallery(source[ind_1][ind_2][3],description=text)
+            card=big_image(source[ind_1][ind_2][3],description=text)
         if obj_3 is not None:
             obj_3=source[ind_1][ind_2][3]
         if obj_4 is not None:
@@ -124,7 +115,7 @@ def text_to_resp(source,ind_1=None,ind_2=None,card=None,obj_3=None,obj_4=None):
         tts=source[ind_1][1]
         status=source[ind_1][2]
         if card is not None:
-            card=image_gallery(source[ind_1][3],description=text)
+            card=big_image(source[ind_1][3],description=text)
         if obj_3 is not None:
             obj_3=source[ind_1][3]
         if obj_4 is not None:
@@ -134,7 +125,7 @@ def text_to_resp(source,ind_1=None,ind_2=None,card=None,obj_3=None,obj_4=None):
         tts=source[1]
         status=source[2]
         if card is not None:
-            card=image_gallery(source[3],description=text) 
+            card=big_image(source[3],description=text) 
         if obj_3 is not None:
             obj_3=source[3]
         if obj_4 is not None:
@@ -145,19 +136,21 @@ def help_4_zagadka (event,ind_1,povtor=None):
     place=event.get('state').get('application').get('place_seen')
     step=event.get('state').get('application').get('step')
     status=event.get('state').get('application').get('status')
-    if ind_1==999 and status!='help_not_end':
-        buttons=[button('Да', hide=True),button('Нет', hide=True)]
-        card_999=True
-    elif ind_1==999 and status=='help_not_end':
-        buttons=[button('Да', hide=True)]
-    else:
-        buttons=[button('Я не знаю', hide=True),button('Повтори', hide=True)]
-        card_999=None
     if povtor:
         if status=='help_not_end':
             status='zagadka'
         elif status=='help_end':
             status='help_not_end'
+    if ind_1==999 and status!='help_not_end':
+        buttons=[button('Да', hide=True),button('Нет', hide=True)]
+        card_999=True
+    elif ind_1==999 and status=='help_not_end':
+        card_999=True
+        buttons=[button('Да', hide=True)]
+    else:
+        buttons=[button('Повтори', hide=True),button('Я не знаю', hide=True),button('Я знаю', hide=True)]
+        card_999=None
+
     if status=="zagadka" or status=='zag_not_end':
         param=text_to_resp(pers_help,ind_1,0,card=card_999)
         return make_response(text=param[0],tts=param[1], buttons=buttons,step=step, place=place,

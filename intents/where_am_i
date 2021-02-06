@@ -1,0 +1,5 @@
+root:
+    $where_am_i
+$where_am_i:
+    %lemma
+    Где я
