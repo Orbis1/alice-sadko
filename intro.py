@@ -88,7 +88,7 @@ def around_kremlin(appState, sessionState):
   )
 
 def somewhere(appState, sessionState):
-  txt = 'Вы очень далеко от Новгородского Кремля. Продолжить в режиме повествования?'
+  txt = 'Далеко ты от кремля Новгородского. Продолжить в режиме повествования?'
   sessionState['context'] = 'somewhere'
   sessionState['story_mode'] = True
   appState['step'] = 0
