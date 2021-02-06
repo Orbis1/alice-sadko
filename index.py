@@ -3,6 +3,7 @@ from fun import fallback
 from person import person
 import intro
 from navigation import navigation
+from fun import big_image
 
 def handler(event, context):
 
@@ -36,14 +37,14 @@ def handler(event, context):
             else:
                 return intro.welcome(state=sessionState)
 
-        if context=='continue_game':
-            if 'YANDEX.CONFIRM' in intents:
+        elif context=='continue_game':
+            if 'answer_da' in intents or 'YANDEX.CONFIRM' in intents:
                 return person(event=event, step=0, place=appState['place_seen'], status=appState.get('status')) #?
-            if 'YANDEX.REJECT' in intents:
+            if 'net' in intents or 'YANDEX.REJECT' in intents:
                 return intro.welcome(state=sessionState, appStateClear=True, appState=appState)      
 
-        if context=='welcome':
-            if 'YANDEX.CONFIRM' in intents:
+        elif context=='welcome':
+            if 'answer_da' in intents or 'YANDEX.CONFIRM' in intents:
                 # запрос геолокации
                 if user_location is None and geo_asked==False:
                     return intro.ask_geo(state=sessionState,card=True)
@@ -51,41 +52,66 @@ def handler(event, context):
                     return intro.how_far_from_kremlin(sessionState=sessionState, appState=appState, user_location=user_location)
                 if geo_asked==False:
                     return intro.ask_geo(state=sessionState,card=True)
+            if 'net' in intents or 'YANDEX.REJECT' in intents:
+                    return intro.bye()
             else:
                 return intro.ask_geo(state=sessionState,card=True)
-            if 'YANDEX.REJECT' in intents:
-                    return intro.bye()
             return intro.ask_geo(state=sessionState,card=True)
+
+        # начало. где находится пользоваетль
+        elif context=='ask_geo':
+            return intro.how_far_from_kremlin(sessionState=sessionState, appState=appState, user_location=user_location)
+
+        elif context=='within_kremlin':
+            if 'answer_da' in intents or 'YANDEX.CONFIRM' in intents:
+                state['context'] = 'within_kremlin_next'
+                text='''Нажми "Да" для того, чтобы продолжить путь''',
+                tts='''Первое летописное упоминание о Новгородском кремле, или как еще его называют дет+инце, относится к тысяча сорок четвертому г+оду. Является памятником архитектуры федерального значения,а также как часть исторического центра Великого Новгорода входит в список всемирного наследия ЮНЕСКО.
+Дет+инцем называется центральная часть кремлевского ансамбля, в которой, в случае военных действий, могло укрыться население города. 
+До наших дней сохранились несколько древних церквей, в том числе один из древнейших храмов на территории России - Софийский собор, звонница и девять боевых башен.
+А теперь нам пора. Продолжим?'''
+                card=big_image(image_ids='''213044/7bb6cdba1162dd5a78d7''',description=text)
+                return make_only_response(    
+            text = text,
+            tts = tts,
+            card=card,
+            directives = True,
+            buttons=ph.hi['buttons']
+                )
+            else:
+                return navigation(appState, sessionState, intents, user_location)
+#      После истории про Кремль
+        elif context=='within_kremlin_next':
+            if 'answer_da' in intents or 'YANDEX.CONFIRM' in intents:
+                return navigation(appState, sessionState, intents, user_location)
+            else:
+                return intro.bye()
+        elif context=='around_kremlin':
+            if 'answer_da' in intents or 'YANDEX.CONFIRM' in intents or 'im_ready' in intents:
+                return intro.how_far_from_kremlin(sessionState=sessionState, appState=appState, user_location=user_location)
+            else:
+                return intro.bye()
+
+        elif context=='somewhere':
+            if 'answer_da' in intents or 'YANDEX.CONFIRM' in intents:
+                return navigation(appState, sessionState, intents, user_location)
+            if 'net' in intents or 'YANDEX.REJECT' in intents:
+                return intro.bye()
+        
+        elif context=='quest':
+            return person(event=event, step=appState['step'], place=appState['place_seen'], status=appState.get('status'))
+
+        elif context=='navigation':
+            return navigation(appState, sessionState, intents, user_location, event)
+
+
 
         # запрос геолокации
         if user_location is None and geo_asked==False and context!='quest':
             return intro.ask_geo(state=sessionState)
-
-        # начало. где находится пользоваетль
-        if context=='ask_geo':
-            return intro.how_far_from_kremlin(sessionState=sessionState, appState=appState, user_location=user_location)
-
-        if context=='within_kremlin':
-            return intro.say('Начать экскурсию')
-
-        if context=='around_kremlin':
-            return intro.say('Подойти к воротам')
-
-        if context=='somewhere':
-            if 'YANDEX.CONFIRM' in intents:
-                return navigation(appState, sessionState, intents, user_location)
-            if 'YANDEX.REJECT' in intents:
-                return intro.bye()
-
+        
         if 'im_ready' in intents:
             return navigation(appState, sessionState, intents, user_location, event)
-
-        if context=='quest':
-            return person(event=event, step=appState['step'], place=appState['place_seen'], status=appState.get('status'))
-
-        if context=='navigation':
-            return navigation(appState, sessionState, intents, user_location, event)
-
         if 'help' in intents:
             return intro.say_help()
 
