@@ -3,6 +3,7 @@ from fun import make_only_response
 from resource import quest_order, find_object
 from intro import get_distance_to_object
 from sights import sights
+from intro import say_help
 
 
 def give_direction(data, sessionState, appState):
@@ -134,17 +135,21 @@ def navigation(appState, sessionState, intents, user_location, event={}):
   
   # Рассказать про место, куда он идёт
   if nav_context == 'give_direction':
-    if 'YANDEX.CONFIRM' in intents:
+    if 'answer_da' in intents or 'YANDEX.CONFIRM' in intents:
         return tell_story(data[1], sessionState, appState)
-    if 'YANDEX.REJECT' in intents:
+    elif 'net' in intents or 'YANDEX.REJECT' in intents:
         return give_direction_last(data[3], sessionState, appState)
+    # else:
+    #   return fallback(2step)
 
   # Историческая справка, про то куда он идёт
   if nav_context == 'tell_story':
     if 'YANDEX.CONFIRM' in intents:
       return give_direction_last(data[3], sessionState, appState, add_text=data[2])
-    if 'YANDEX.REJECT' in intents:
+    elif 'YANDEX.REJECT' in intents:
       return give_direction_last(data[3], sessionState, appState)
+    elif 'povtor' in intents:
+      return tell_story(data[1], sessionState, appState)
 
   # обработка "Где я?"
   if 'where_am_i' in intents:
@@ -169,6 +174,9 @@ def navigation(appState, sessionState, intents, user_location, event={}):
   if 'i_am_here' in intents:
     return person(event=event, step=appState['step'], place=appState['place_seen'], status=appState.get('status'))
 
+  # обработка "справка/помощь"
+  if 'help' in intents:
+      return say_help()
   
   return make_only_response(
     text='жопа-жопа-жопа-жопа',
