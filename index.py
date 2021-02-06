@@ -46,11 +46,16 @@ def handler(event, context):
             if 'YANDEX.CONFIRM' in intents:
                 # запрос геолокации
                 if user_location is None and geo_asked==False:
-                    return intro.ask_geo(state=sessionState)
-                if user_location is not None:
+                    return intro.ask_geo(state=sessionState,card=True)
+                if user_location is not None and geo_asked==True:
                     return intro.how_far_from_kremlin(sessionState=sessionState, appState=appState, user_location=user_location)
+                if geo_asked==False:
+                    return intro.ask_geo(state=sessionState,card=True)
+            else:
+                return intro.ask_geo(state=sessionState,card=True)
             if 'YANDEX.REJECT' in intents:
                     return intro.bye()
+            return intro.ask_geo(state=sessionState,card=True)
 
         # запрос геолокации
         if user_location is None and geo_asked==False and context!='quest':
