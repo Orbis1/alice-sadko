@@ -55,16 +55,19 @@ def fallback(command):
 
 # with location
 def how_far_from_kremlin(appState, sessionState, user_location):
-  if user_location is not None and user_location['accuracy'] < 100:
-      target = sights['kupol']
-      distance = get_distance_to_object(user_location, target['location'])
-      print('Расстояние до {name} составялет {distance}'.format(name=target['name'], distance=distance))
+   
+    if user_location is not None and user_location['accuracy'] < 100:
+        target = sights['kupol']
+        distance = get_distance_to_object(user_location, target['location'])
+        print('Расстояние до {name} составялет {distance}'.format(name=target['name'], distance=distance))
     
-      if distance < 300:
-        return within_kremlin(appState, sessionState) 
-      if 300 <= distance < 1000: 
-        return around_kremlin(appState, sessionState)
-      if distance >= 1000:
+        if distance < 300:
+            return within_kremlin(appState, sessionState) 
+        if 300 <= distance < 1000: 
+            return around_kremlin(appState, sessionState)
+        distance >= 1000:
+            return somewhere(appState, sessionState)
+    else:
         return somewhere(appState, sessionState)
       
 
