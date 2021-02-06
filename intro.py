@@ -31,13 +31,21 @@ def say_help():
     text=txt
   )
 
-def ask_geo(state):
-  state['geo_asked'] = True; 
-  state['context'] = 'ask_geo'; 
-  return make_only_response(
-    text = ph.needgeo['txt'],
-    tts = ph.needgeo['tts'],
-    directives = True,
+def ask_geo(state,card=None): #Карточка только для первого входа
+    state['geo_asked'] = True; 
+    state['context'] = 'ask_geo'
+    if card is not None:
+        return  make_only_response(    
+            text = ph.needgeo_first['txt'],
+            tts = ph.needgeo_first['tts'],
+            card=ph.needgeo_first['card'],
+            directives = True
+        )
+    else:
+        return make_only_response(
+        text = ph.needgeo['txt'],
+        tts = ph.needgeo['tts'],
+        directives = True,
   )
 
 def continue_game(state):
