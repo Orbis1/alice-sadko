@@ -1,6 +1,6 @@
-
 from fun import help_4_zagadka, text_to_resp, make_response, fallback, button,end_session1
 from resource import fallback_answer,answer, pers_step, pers_zag,pers_sprav, quest_order
+from intro import say_help
 # from navigation import navigation
 
 
@@ -27,7 +27,9 @@ def person(event,step,place, status=None, id_zag=None):
                 param=text_to_resp(pers_step,place,step)
                 return make_response(text=param[0],tts=param[1],buttons=[
             button('Повтори', hide=True), button('Жар-птицу', hide=True),button('Я не знаю', hide=True),],step=step+1, place=place,
-            status=param[2], event=event)                    
+            status=param[2], event=event)
+            elif 'help' in intents:
+                return say_help()
             
             else:
                 step=step+1
@@ -41,6 +43,8 @@ def person(event,step,place, status=None, id_zag=None):
         #     user_location = event['session'].get('location')
         #     return  navigation(appState, sessionState, intents, user_location, event)
 # Обработка ответа "да"
+        elif 'help' in intents:
+            return say_help()
         elif 'answer_da' in intents or 'YANDEX.CONFIRM' in intents:
             if step ==4 or step ==6:
                 return make_response(text='Говори!', step=step,place=place,status=status, event=event)
@@ -89,7 +93,7 @@ def person(event,step,place, status=None, id_zag=None):
                 
 # Обработка повторов            
                 
-        elif 'povtor'in intents or "YANDEX.REPEAT" in intents:
+        elif 'povtor'in intents or "YANDEX.REPEAT" in intents or 'next' in intents:
             if status=='help_not_end' or status=='help_end':
                 if step==3: return help_4_zagadka (event,999,povtor=True)
                 if step==4: return help_4_zagadka (event,pers_sprav[place][0],povtor=True)
