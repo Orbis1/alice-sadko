@@ -19,7 +19,7 @@ hi = {
 
 quest = {
   'buttons': [
-      { 'title': "Я на месте", 'hide': False },
+      { 'title': "Я готов", 'hide': False },
       { 'title': "Да", 'hide': True },
       { 'title': "Нет", 'hide': True},
     ]

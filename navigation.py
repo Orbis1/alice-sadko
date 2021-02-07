@@ -11,7 +11,8 @@ def give_direction(data, sessionState, appState):
   # Контент для ответа
   txt = data[0]
   tts = data[1]
-  # картинка??
+  card = data[2]
+
   buttons = [
     { 'title': "Повтори", 'hide': True },
     { 'title': "Да", 'hide': True },
@@ -29,15 +30,16 @@ def give_direction(data, sessionState, appState):
   
   return make_only_response(
     text=txt,
-    # tts=tts,
-    buttons=buttons
+    tts=tts,
+    buttons=buttons,
+    card=card
   )
 
 def tell_story(data, sessionState, appState):
   # Контент для ответа
   txt = data[0]
   tts = data[1]
-  # картинка??
+  card = data[2]
   buttons = [
     { 'title': "Да", 'hide': True },
     { 'title': "Нет", 'hide': True },
@@ -54,8 +56,9 @@ def tell_story(data, sessionState, appState):
   
   return make_only_response(
     text=txt,
-    # tts=tts,
-    buttons=buttons
+    tts=tts,
+    buttons=buttons,
+    card=card
   )
 
 def give_direction_last(data, sessionState, appState, add_text=None, dist=None ):
@@ -72,11 +75,12 @@ def give_direction_last(data, sessionState, appState, add_text=None, dist=None )
     txt = add + data[0]
     tts = add + data[1]
     sessionState['status']=None  
+  
+  card = data[2]
 
-  # картинка??
   buttons = [
     { 'title': "Где я?", 'hide': True },
-    { 'title': "Я на месте", 'hide': True },
+    { 'title': "Я готов", 'hide': True },
     { 'title': "Повтори", 'hide': True },
   ]
 
@@ -91,8 +95,9 @@ def give_direction_last(data, sessionState, appState, add_text=None, dist=None )
   
   return make_only_response(
     text=txt,
-    # tts=tts,
-    buttons=buttons
+    tts=tts,
+    buttons=buttons,
+    card=card
   )
 
 def switch_to_pers(data, sessionState, appState):
@@ -100,7 +105,7 @@ def switch_to_pers(data, sessionState, appState):
   txt = data[0]
   tts = data[1]
   
-  # картинка??
+  card = data[2]
   buttons = [
     { 'title': "Где я?", 'hide': False },
     { 'title': "Я готов", 'hide': False },
@@ -119,8 +124,9 @@ def switch_to_pers(data, sessionState, appState):
   
   return make_only_response(
     text=txt,
-    # tts=tts,
-    buttons=buttons
+    tts=tts,
+    buttons=buttons,
+    card=card
   )
 
 def navigation(appState, sessionState, intents, user_location, event={}):
@@ -178,7 +184,7 @@ def navigation(appState, sessionState, intents, user_location, event={}):
   # обработка "Где я?"
   elif 'where_am_i' in intents or 'i_am_here' in intents:
     print('user_location', user_location)
-    if user_location is not None and user_location['accuracy'] < 50 and story_mode==False:
+    if user_location is not None and user_location['accuracy'] < 66 and story_mode==False:
     # если геолокация есть и погрешность не больше 50 метров мы не в режиме истории
       target = sights[place]
       distance = get_distance_to_object(user_location, target['location'])
