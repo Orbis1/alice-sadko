@@ -25,7 +25,6 @@ def person(event,step,place, status=None, id_zag=None):
                                     status=param[2], event=event)
             elif 'povtor'in intents or "YANDEX.REPEAT" in intents or 'next' in intents:
                 event['state']['session']['spravka']=None
-                event['state']['session']['spravka2']=None
                 step=0
                 param=text_to_resp(pers_step,place,step)
                 return make_response(text=param[0],tts=param[1],buttons=[
@@ -109,7 +108,6 @@ def person(event,step,place, status=None, id_zag=None):
                 
         elif 'povtor'in intents or "YANDEX.REPEAT" in intents or 'next' in intents:
             event['state']['session']['spravka']=None
-            event['state']['session']['spravka2']=None
             if status=='help_not_end' or status=='help_end':
                 if step==3: return help_4_zagadka (event,999,povtor=True)
                 if step==4: return help_4_zagadka (event,pers_sprav[place][0],povtor=True)
