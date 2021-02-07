@@ -136,9 +136,13 @@ def navigation(appState, sessionState, intents, user_location, event={}):
   # Рассказать про место, куда он идёт
   elif nav_context == 'give_direction':
     if 'answer_da' in intents or 'YANDEX.CONFIRM' in intents:
-        return tell_story(data[1], sessionState, appState)
+      return tell_story(data[1], sessionState, appState)
     elif 'net' in intents or 'YANDEX.REJECT' in intents:
-        return give_direction_last(data[3], sessionState, appState)
+      return give_direction_last(data[3], sessionState, appState)
+    elif 'povtor'in intents or "YANDEX.REPEAT" in intents:
+      return give_direction(data[0], sessionState, appState)
+
+
     # elif 'help' in intents:
     #   return help(nav_context)
     #   return give_direction(data[0], sessionState, appState)
@@ -151,7 +155,7 @@ def navigation(appState, sessionState, intents, user_location, event={}):
       return give_direction_last(data[3], sessionState, appState, add_text=data[2])
     elif 'net' in intents or 'YANDEX.REJECT' in intents:
       return give_direction_last(data[3], sessionState, appState)
-    elif 'povtor' in intents:
+    elif 'povtor'in intents or "YANDEX.REPEAT" in intents:
       return tell_story(data[1], sessionState, appState)
 
   # обработка "Где я?"
