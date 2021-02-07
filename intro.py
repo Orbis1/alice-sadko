@@ -4,9 +4,9 @@ from sights import sights
 import phrases as ph
 from resource import quest_order
 
-def bye():
+def bye(txt='До скорых встреч!'):
   return make_only_response(
-    text='Пока-пока',
+    text=txt,
     end_session=True
   )
 
@@ -83,7 +83,7 @@ def how_far_from_kremlin(appState, sessionState, user_location):
       
 
 def within_kremlin(appState, sessionState):
-  txt = 'Вы находитесь на территории Новгородского Кремля. Рассказать про Кремль??'
+  txt = 'Вы находитесь на территории Новгородского Кремля. Рассказать про Кремль?'
   sessionState['context'] = 'within_kremlin'
   return make_only_response(
     text=txt,
@@ -91,11 +91,11 @@ def within_kremlin(appState, sessionState):
   )
 
 def around_kremlin(appState, sessionState):
-  txt = 'Вы рядом с Новгородским Кремлём. Подойдите к Кремлёвским воротам и скажите "Я возле ворот"'
+  txt = 'Вы рядом с Новгородским Кремлём. Подойдите к Кремлёвским воротам и скажите "Я готов"'
   sessionState['context'] = 'around_kremlin'
   return make_only_response(
     text=txt,
-    buttons=[{ 'title': "Я возле ворот", 'hide': True }]
+    buttons=[{ 'title': "Я готов", 'hide': True }]
   )
 
 def somewhere(appState, sessionState):
