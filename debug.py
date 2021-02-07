@@ -1,3 +1,6 @@
+import math
+
+
 quest_order = ['kupol', 'zvonnitsa', 'cathedral']
 
 place_seen = 'kupol'
@@ -9,6 +12,6 @@ def next_place(place, quest_order=quest_order):
 
 myTuple = ("John", "Peter", "Vicky")
 
-x = place_seen +'\n'+ 'ss'
+x = math.trunc(54.854115645618)
 
-print(len(quest_order))
+print(x)

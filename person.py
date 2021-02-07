@@ -2,11 +2,11 @@
 from fun import help_4_zagadka, text_to_resp, make_response, fallback, button,end_session1
 from resource import fallback_answer,answer, pers_step, pers_zag,pers_sprav, quest_order
 from intro import say_help
-# from navigation import navigation
 
 
 def person(event,step,place, status=None, id_zag=None):
     event['state']['session']['context']='quest'
+    event['state']['session']['nav_context']=None
     intents=event['request'].get('nlu',{}).get('intents')
     step = 0 if step=='null' or step is None else step
 #     spravka=event.get('state').get('session').get('spravka')
@@ -95,7 +95,7 @@ def person(event,step,place, status=None, id_zag=None):
                     status=param[2],
                     place_next=param[3], 
                     event=event,
-                    # context='navigation',
+                    context='navigation',
                     buttons=[{ 'title': "Я готов", 'hide': True }],
                     # nav_context='give_direction',
                     nav_step=0
@@ -146,7 +146,7 @@ def person(event,step,place, status=None, id_zag=None):
                     status=param[2],
                     place_next=param[3], 
                     event=event,
-                    # context='navigation',
+                    context='navigation',
                     buttons=[{ 'title': "Я готов", 'hide': True }],
                     # nav_context='give_direction'
                     nav_step=0

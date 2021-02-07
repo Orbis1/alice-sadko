@@ -4,6 +4,7 @@ from resource import quest_order, find_object
 from intro import get_distance_to_object
 from sights import sights
 from intro import say_help, fallback
+import math
 
 
 def give_direction(data, sessionState, appState):
@@ -61,7 +62,7 @@ def give_direction_last(data, sessionState, appState, add_text=None, dist=None )
   # Контент для ответа
   add=''
   if dist is not None:
-    add = 'Осталось пройти ещё {} метров \n'.format(dist) 
+    add = 'Осталось пройти ещё {} метров \n'.format(math.trunc(dist)) 
 
   if add_text is not None:
     txt = add + add_text[0] + '\n' + data[0]
@@ -125,7 +126,7 @@ def switch_to_pers(data, sessionState, appState):
 def navigation(appState, sessionState, intents, user_location, event={}):
   # Запоминаем ключевые данные из state
   step = sessionState.get('nav_step', 0)
-  print("🚀 ~ file: navigation.py ~ line 129 ~ step", step)
+  step = 0 if step == 'null' else step
   place_seen = appState.get('place_seen')
   place = quest_order[0] if place_seen is None or place_seen=='null' else place_seen
   nav_context = sessionState.get('nav_context')
@@ -137,7 +138,7 @@ def navigation(appState, sessionState, intents, user_location, event={}):
   data = find_object[place]
 
   # Сказать полюзователю куда идти
-  if step == 0:
+  if step == 0 and (nav_context is None or nav_context == 'null'):
     return give_direction(data[0], sessionState, appState)
   
   # Рассказать про место, куда он идёт
@@ -176,14 +177,15 @@ def navigation(appState, sessionState, intents, user_location, event={}):
 
   # обработка "Где я?"
   elif 'where_am_i' in intents or 'i_am_here' in intents:
-    if user_location is not None and user_location['accuracy'] < 80 and story_mode==False:
+    print('user_location', user_location)
+    if user_location is not None and user_location['accuracy'] < 50 and story_mode==False:
     # если геолокация есть и погрешность не больше 50 метров мы не в режиме истории
       target = sights[place]
       distance = get_distance_to_object(user_location, target['location'])
       print('Расстояние до {name} составялет {distance}'.format(name=target, distance=distance))
-      if distance > 50:
+      if distance > 30:
         return give_direction_last(data[4], sessionState, appState, dist=distance)
-      if distance <= 50:
+      if distance <= 30:
         return give_direction_last(data[5], sessionState, appState)
     else:
       if story_mode==True:
@@ -194,7 +196,7 @@ def navigation(appState, sessionState, intents, user_location, event={}):
         return give_direction_last(data[4], sessionState, appState)
      
 
-  # обработка "Я на месте"
+  # обработка "Я готов"
   elif 'im_ready' in intents:
     return person(event=event, step=appState['step'], place=appState['place_seen'], status=appState.get('status'))
   
