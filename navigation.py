@@ -147,9 +147,9 @@ def navigation(appState, sessionState, intents, user_location, event={}):
 
   # Историческая справка, про то куда он идёт
   elif nav_context == 'tell_story':
-    if 'YANDEX.CONFIRM' in intents:
+    if 'answer_da' in intents or 'YANDEX.CONFIRM' in intents:
       return give_direction_last(data[3], sessionState, appState, add_text=data[2])
-    elif 'YANDEX.REJECT' in intents:
+    elif 'net' in intents or 'YANDEX.REJECT' in intents:
       return give_direction_last(data[3], sessionState, appState)
     elif 'povtor' in intents:
       return tell_story(data[1], sessionState, appState)
