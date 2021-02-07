@@ -203,7 +203,7 @@ def handler(event, context):
                 return make_only_response(text=param[0],tts=param[1],buttons=[
                         button('Продолжить', hide=True)])
             else:
-                return intro.bye()
+                return intro.bye('Позови меня, когда будешь у ворот Кремлёвских')
 
         elif context=='somewhere':
             if 'answer_da' in intents or 'YANDEX.CONFIRM' in intents:

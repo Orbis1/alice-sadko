@@ -140,6 +140,14 @@ def get_distance_to_object(user_location, target_location):
 
   return distance
 
+def get_url_map(user_location, target_location):
+  lat1 = user_location['lat']
+  lon1 = user_location['lon']
+  lat2 = target_location['lat']
+  lon2 = target_location['lon']
+  url = 'https://yandex.ru/maps/?rtext={lat1},{lon1}~{lat2},{lon2}&rtt=mt'
+  return url
+
 # story
 
 def begin(state):
