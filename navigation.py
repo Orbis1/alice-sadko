@@ -11,7 +11,7 @@ def give_direction(data, sessionState, appState):
   # Контент для ответа
   txt = data[0]
   tts = data[1]
-  card = big_image(image_ids=data[2], description=txt)
+  card = big_image(image_ids=data[2], description=txt) if data[2] is not None else None
 
   buttons = [
     { 'title': "Повтори", 'hide': True },
@@ -40,7 +40,7 @@ def tell_story(data, sessionState, appState):
   # Контент для ответа
   txt = data[0]
   tts = data[1]
-  card = big_image(image_ids=data[2], description=txt)
+  card = big_image(image_ids=data[2], description=txt) if data[2] is not None else None
   buttons = [
     { 'title': "Да", 'hide': True },
     { 'title': "Нет", 'hide': True },
@@ -66,7 +66,7 @@ def give_direction_last(data, sessionState, appState, add_text=None, dist=None )
   # Контент для ответа
   add=''
   if dist is not None:
-    add = 'Осталось пройти ещё {} метров \n'.format(math.trunc(dist)) 
+    add = 'Осталось пройти немного: {} метр(а) \n'.format(math.trunc(dist)) 
 
   if add_text is not None:
     txt = add + add_text[0] + '\n' + data[0]
@@ -77,7 +77,7 @@ def give_direction_last(data, sessionState, appState, add_text=None, dist=None )
     tts = add + data[1]
     sessionState['status']=None  
   
-  card = big_image(image_ids=data[2], description=txt)
+  card = big_image(image_ids=data[2], description=txt) if data[2] is not None else None
 
   buttons = [
     { 'title': "Где я?", 'hide': True },
@@ -106,7 +106,7 @@ def switch_to_pers(data, sessionState, appState):
   txt = data[0]
   tts = data[1]
   
-  card = big_image(image_ids=data[2], description=txt)
+  card = big_image(image_ids=data[2], description=txt) if data[2] is not None else None
   buttons = [
     { 'title': "Где я?", 'hide': False },
     { 'title': "Я готов", 'hide': False },
