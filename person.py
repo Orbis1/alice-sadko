@@ -87,6 +87,7 @@ def person(event,step,place, status=None, id_zag=None):
                                     status=param[2], event=event)
             elif step == 5:
                 param=text_to_resp(pers_zag,pers_sprav[place][1],1,obj_3=True)
+                buttons = None if getNextPlace(place)=='end' else [{ 'title': "Я готов", 'hide': True }]
                 return make_response(
                     text=param[0],
                     tts=param[1],
@@ -96,7 +97,7 @@ def person(event,step,place, status=None, id_zag=None):
                     place_next=param[3], 
                     event=event,
                     context='navigation',
-                    buttons=[{ 'title': "Я готов", 'hide': True }],
+                    buttons=buttons,
                     # nav_context='give_direction',
                     nav_step=0
 
@@ -139,6 +140,7 @@ def person(event,step,place, status=None, id_zag=None):
                                     status=param[2], event=event)
         elif answer[place][pers_sprav[place][1]] in intents and step==6:
                 param=text_to_resp(pers_zag,pers_sprav[place][1],1,obj_3=True)
+                buttons = None if getNextPlace(place)=='end' else [{ 'title': "Я готов", 'hide': True }]
                 return make_response(
                     text=param[0],
                     tts=param[1],
@@ -147,7 +149,7 @@ def person(event,step,place, status=None, id_zag=None):
                     place_next=param[3], 
                     event=event,
                     context='navigation',
-                    buttons=[{ 'title': "Я готов", 'hide': True }],
+                    buttons=buttons,
                     # nav_context='give_direction'
                     nav_step=0
                 )
