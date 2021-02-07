@@ -8,6 +8,7 @@ from intro import say_help
 def person(event,step,place, status=None, id_zag=None):
     event['state']['session']['context']='quest'
     intents=event['request'].get('nlu',{}).get('intents')
+#     spravka=event.get('state').get('session').get('spravka')
     # if step==0:
 #         Выбираем ИД загадки
         # id_zag=random.choice(pers_sprav[place]['medium']) # в дальнейшем можно прописать уровень
@@ -38,7 +39,7 @@ def person(event,step,place, status=None, id_zag=None):
                 return end_session1(text=param[0],tts=param[1],event=event)
             elif event['state']['session']['spravka']=='spravka':
                 event['state']['session']['spravka']='spravka2'
-                param=text_to_resp(fallback_answer,place,0)
+                param=text_to_resp(fallback_answer,place,3)
                 return make_response(text=param[0],tts=param[1],buttons=[
                     button('Продолжить', hide=True)], step=step, place=place,
                                     status=status, event=event)
@@ -155,7 +156,7 @@ def person(event,step,place, status=None, id_zag=None):
             return end_session1(text=param[0],tts=param[1],event=event)
         elif event['state']['session']['spravka']=='spravka':
             event['state']['session']['spravka']='spravka2'
-            param=text_to_resp(fallback_answer,place,0)
+            param=text_to_resp(fallback_answer,place,3)
             return make_response(text=param[0],tts=param[1],buttons=[
                     button('Продолжить', hide=True)], step=step, place=place,
                                     status=status, event=event)
