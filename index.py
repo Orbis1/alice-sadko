@@ -68,18 +68,17 @@ def handler(event, context):
         elif context=='within_kremlin':
             if 'answer_da' in intents or 'YANDEX.CONFIRM' in intents:
                 sessionState['context'] = 'within_kremlin_next'
-                text='''Нажми "Да" для того, чтобы продолжить путь''',
+                text='''Нажми "Да" для того, чтобы продолжить путь'''
                 tts='''Первое летописное упоминание о Новгородском кремле, или как еще его называют дет+инце, относится к тысяча сорок четвертому г+оду. Является памятником архитектуры федерального значения,а также как часть исторического центра Великого Новгорода входит в список всемирного наследия ЮНЕСКО.
 Дет+инцем называется центральная часть кремлевского ансамбля, в которой, в случае военных действий, могло укрыться население города. 
 До наших дней сохранились несколько древних церквей, в том числе один из древнейших храмов на территории России - Софийский собор, звонница и девять боевых башен.
 А теперь нам пора. Продолжим?'''
                 card=big_image(image_ids='''213044/7bb6cdba1162dd5a78d7''',description=text)
                 return make_only_response(    
-            text = text,
-            tts = tts,
-            card=card,
-            directives = True,
-            buttons=ph.hi['buttons']
+                    text = text,
+                    tts = tts,
+                    card=card,
+                    buttons=ph.hi['buttons']
                 )
             else:
                 return navigation(appState, sessionState, intents, user_location)
@@ -122,7 +121,7 @@ def handler(event, context):
         if user_location is None and geo_asked==False and context!='quest':
             return intro.ask_geo(state=sessionState)
         
-        if 'im_ready' in intents:
+        if 'im_ready' in intents and appState.get('status') =='end_pers':
             return navigation(appState, sessionState, intents, user_location, event)
         if 'help' in intents:
             return intro.say_help()
