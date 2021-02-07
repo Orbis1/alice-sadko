@@ -1,3 +1,4 @@
+# person
 from fun import help_4_zagadka, text_to_resp, make_response, fallback, button,end_session1
 from resource import fallback_answer,answer, pers_step, pers_zag,pers_sprav, quest_order
 from intro import say_help
@@ -22,14 +23,26 @@ def person(event,step,place, status=None, id_zag=None):
                 return make_response(text=param[0],tts=param[1],buttons=[
                     button('Да', hide=True),button('Нет', hide=True)],step=step+2, place=place,
                                     status=param[2], event=event)
-            elif 'povtor'in intents or "YANDEX.REPEAT" in intents:
+            elif 'povtor'in intents or "YANDEX.REPEAT" in intents or 'next' in intents:
+                event['state']['session']['spravka']=None
+                event['state']['session']['spravka2']=None
                 step=0
                 param=text_to_resp(pers_step,place,step)
                 return make_response(text=param[0],tts=param[1],buttons=[
             button('Повтори', hide=True), button('Жар-птицу', hide=True),button('Я не знаю', hide=True),],step=step+1, place=place,
             status=param[2], event=event)
             elif 'help' in intents:
+                event['state']['session']['spravka']='spravka'
                 return say_help()
+            elif event['state']['session']['spravka']=='spravka2':
+                param=text_to_resp(fallback_answer,place,1)
+                return end_session1(text=param[0],tts=param[1],event=event)
+            elif event['state']['session']['spravka']=='spravka':
+                event['state']['session']['spravka']='spravka2'
+                param=text_to_resp(fallback_answer,place,0)
+                return make_response(text=param[0],tts=param[1],buttons=[
+                    button('Продолжить', hide=True)], step=step, place=place,
+                                    status=status, event=event)
             
             else:
                 step=step+1
@@ -44,6 +57,7 @@ def person(event,step,place, status=None, id_zag=None):
         #     return  navigation(appState, sessionState, intents, user_location, event)
 # Обработка ответа "да"
         elif 'help' in intents:
+            event['state']['session']['spravka']='spravka'
             return say_help()
         elif 'answer_da' in intents or 'YANDEX.CONFIRM' in intents:
             if step ==4 or step ==6:
@@ -94,6 +108,8 @@ def person(event,step,place, status=None, id_zag=None):
 # Обработка повторов            
                 
         elif 'povtor'in intents or "YANDEX.REPEAT" in intents or 'next' in intents:
+            event['state']['session']['spravka']=None
+            event['state']['session']['spravka2']=None
             if status=='help_not_end' or status=='help_end':
                 if step==3: return help_4_zagadka (event,999,povtor=True)
                 if step==4: return help_4_zagadka (event,pers_sprav[place][0],povtor=True)
@@ -135,6 +151,16 @@ def person(event,step,place, status=None, id_zag=None):
                     # nav_context='give_direction'
                     nav_step=0
                 )
+#  обработка других ответов по справке
+        elif event['state']['session']['spravka']=='spravka2':
+            param=text_to_resp(fallback_answer,place,1)
+            return end_session1(text=param[0],tts=param[1],event=event)
+        elif event['state']['session']['spravka']=='spravka':
+            event['state']['session']['spravka']='spravka2'
+            param=text_to_resp(fallback_answer,place,0)
+            return make_response(text=param[0],tts=param[1],buttons=[
+                    button('Продолжить', hide=True)], step=step, place=place,
+                                    status=status, event=event)
 # Обработка else
 
         else:
