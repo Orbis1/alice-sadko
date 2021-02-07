@@ -8,6 +8,7 @@ from intro import say_help
 def person(event,step,place, status=None, id_zag=None):
     event['state']['session']['context']='quest'
     intents=event['request'].get('nlu',{}).get('intents')
+    step = 0 if step=='null' or step is None else step
 #     spravka=event.get('state').get('session').get('spravka')
     # if step==0:
 #         Выбираем ИД загадки
