@@ -62,10 +62,12 @@ def give_direction_last(data, sessionState, appState, add_text=None):
   if add_text is not None:
     txt = add_text[0] + '\n' + data[0]
     tts = add_text[1] + '\n' + data[1]
+    sessionState['status']='full_story'
   else:
     txt = data[0]
     tts = data[1]
-  
+    sessionState['status']=None  
+    
   # картинка??
   buttons = [
     { 'title': "Где я?", 'hide': True },
@@ -165,6 +167,16 @@ def navigation(appState, sessionState, intents, user_location, event={}):
       return say_help()
     else:
       return fallback(event.get('request', 'no event').get('command', 'no command'))
+
+  elif 'povtor'in intents or "YANDEX.REPEAT" in intents or 'next' in intents:
+    # give_direction_last(data[3], sessionState, appState) <- 'give_direction'
+    # give_direction_last(data[3], sessionState, appState) <- 'tell_story'
+    if sessionState['status'] == 'full_story':
+      return give_direction_last(data[3], sessionState, appState, add_text=data[2])
+    else:
+      return give_direction_last(data[3], sessionState, appState)
+  elif 'help'in intents:
+      return say_help()
 
   # обработка "Где я?"
   elif 'where_am_i' in intents:
