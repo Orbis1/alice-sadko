@@ -1,4 +1,4 @@
-from fun import make_only_response
+from fun import make_only_response, button
 from math import sin, cos, sqrt, atan2, radians
 from sights import sights
 import phrases as ph
