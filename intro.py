@@ -1,4 +1,4 @@
-from fun import make_only_response
+from fun import make_only_response, button
 from math import sin, cos, sqrt, atan2, radians
 from sights import sights
 import phrases as ph
@@ -27,8 +27,11 @@ def say(txt="wawa"):
 
 def say_help():
   txt=ph.help_['txt']
+  tts=ph.help_['tts']
   return make_only_response(
-    text=txt
+    text=txt,
+    tts=tts,
+    buttons=[button('Продолжить', hide=True),]
   )
 
 def ask_geo(state,card=None): #Карточка только для первого входа

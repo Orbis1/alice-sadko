@@ -1,9 +1,10 @@
 # Fake 
-from fun import fallback
+from fun import fallback, make_only_response
 from person import person
 import intro
 from navigation import navigation
 from fun import big_image
+import phrases as ph 
 
 def handler(event, context):
 
@@ -64,7 +65,7 @@ def handler(event, context):
 
         elif context=='within_kremlin':
             if 'answer_da' in intents or 'YANDEX.CONFIRM' in intents:
-                state['context'] = 'within_kremlin_next'
+                sessionState['context'] = 'within_kremlin_next'
                 text='''Нажми "Да" для того, чтобы продолжить путь''',
                 tts='''Первое летописное упоминание о Новгородском кремле, или как еще его называют дет+инце, относится к тысяча сорок четвертому г+оду. Является памятником архитектуры федерального значения,а также как часть исторического центра Великого Новгорода входит в список всемирного наследия ЮНЕСКО.
 Дет+инцем называется центральная часть кремлевского ансамбля, в которой, в случае военных действий, могло укрыться население города. 
