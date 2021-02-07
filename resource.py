@@ -220,6 +220,11 @@ fallback_answer={
         '''Ну что ж путник, вижу устал ты! Коль загадку тебе рассказать - скажи да, коль прощаться будем - скажи нет''',
          '''<speaker audio="dialogs-upload/ba73ad37-33af-4bea-8c8d-b6689c2febdd/1dc052d1-ccad-4f34-adb7-4b91361fc441.opus">''',
         'fallback_answer'
+        ],
+        [
+        '''Извините я вас не понял. Скажите "Продолжить" для выхода из справки''',\
+        '''<speaker audio="dialogs-upload/ba73ad37-33af-4bea-8c8d-b6689c2febdd/d345c532-b927-4038-a552-b6d8d18457bd.opus">''',
+        'fallback_answer' 
         ]
     ],
     'zvonnitsa': [
@@ -238,6 +243,11 @@ fallback_answer={
             '''Ну что ж путник, вижу устал ты! Коль загадку тебе рассказать - скажи да, коль прощаться будем - скажи нет''',
          '''<speaker audio="dialogs-upload/ba73ad37-33af-4bea-8c8d-b6689c2febdd/16c0971c-be82-4412-8de9-ef05450dc099.opus">''',
         'fallback_answer'
+        ],
+        [
+        '''Извините я вас не поняла. Скажите "Продолжить" для выхода из справки''',\
+        '''<speaker audio="dialogs-upload/ba73ad37-33af-4bea-8c8d-b6689c2febdd/7eed6df5-7b5b-4699-8815-6adc3d06db72.opus">''',
+        'fallback_answer' 
         ]
     ],
     'cathedral':[
@@ -256,6 +266,11 @@ fallback_answer={
             '''Ну что ж путник, вижу устал ты! Коль загадку тебе рассказать - скажи да, коль прощаться будем - скажи нет''',
          '''<speaker audio="dialogs-upload/ba73ad37-33af-4bea-8c8d-b6689c2febdd/ceda0888-7f8a-4673-9e21-aae7d0d910a6.opus">''',
         'fallback_answer'
+        ],
+        [
+        '''Извините я вас не поняла. Скажите "Продолжить" для выхода из справки''',\
+        '''<speaker audio="dialogs-upload/ba73ad37-33af-4bea-8c8d-b6689c2febdd/c07a6d7a-fb08-475c-b4ea-7c7106c5e543.opus">''',
+        'fallback_answer' 
         ]
     ]
     
