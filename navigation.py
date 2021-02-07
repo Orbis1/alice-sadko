@@ -121,6 +121,7 @@ def switch_to_pers(data, sessionState, appState):
 def navigation(appState, sessionState, intents, user_location, event={}):
   # Запоминаем ключевые данные из state
   step = sessionState.get('nav_step', 0)
+  step = 0 if step == 'null' else step
   place_seen = appState.get('place_seen')
   place = quest_order[0] if place_seen is None or place_seen=='null' else place_seen
   nav_context = sessionState.get('nav_context')
@@ -189,7 +190,7 @@ def navigation(appState, sessionState, intents, user_location, event={}):
     
 
   # обработка "Я на месте"
-  elif 'i_am_here' in intents:
+  elif 'i_am_here' in intents or 'im_ready' in intents:
     return person(event=event, step=appState['step'], place=appState['place_seen'], status=appState.get('status'))
   
   else:
