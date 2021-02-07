@@ -10,6 +10,15 @@ def bye(txt='До скорых встреч!'):
     end_session=True
   )
 
+def end_game(gift):
+  txt='И тут как ниоткуда появился ларец перед Садко. Открыл садко ларец, а там - {}. Вот и сказочки конец, а кто слушал - молодец.'.format(gift)
+  tts='<speaker audio="dialogs-upload/ca5036ee-1029-4a07-960c-8cf27f1258a3/107591dc-b7d4-462b-8ccd-0ad938ad796a.opus">' + txt + '<speaker audio="dialogs-upload/ca5036ee-1029-4a07-960c-8cf27f1258a3/2fdf95a6-bcbf-4419-945d-31337770b577.opus">'
+  return make_only_response(
+    text=txt,
+    tts=tts,
+    end_session=True
+  )
+
 def welcome(state, appStateClear=False, appState=False):
     state['context'] = 'welcome'
     state['spravka']=None

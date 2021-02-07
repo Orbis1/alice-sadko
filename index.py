@@ -39,9 +39,11 @@ def handler(event, context):
             else:
                 return intro.welcome(state=sessionState)
 
+
         elif context=='continue_game':
+            place='cathedral' if appState['place_seen']=='end' else appState['place_seen']
             if 'answer_da' in intents or 'YANDEX.CONFIRM' in intents:
-                return person(event=event, step=0, place=appState['place_seen'], status=appState.get('status')) #?
+                return person(event=event, step=0, place=place, status=appState.get('status')) #?
             elif 'net' in intents or 'YANDEX.REJECT' in intents:
                 return intro.welcome(state=sessionState, appStateClear=True, appState=appState)
             elif 'help' in intents:
@@ -53,7 +55,7 @@ def handler(event, context):
                 event['state']['session']['spravka']=None
                 return intro.continue_game(sessionState)
             elif 'next' in intents and event['state']['session']['spravka']!='spravka':
-                return person(event=event, step=0, place=appState['place_seen'], status=appState.get('status'))
+                return person(event=event, step=0, place=place, status=appState.get('status'))
             elif event['state']['session']['spravka']=='spravka2':
                 param=text_to_resp(fallback_answer,'all',1)
                 return end_session1(text=param[0],tts=param[1],event=event)
@@ -63,6 +65,10 @@ def handler(event, context):
                 return make_only_response(text=param[0],tts=param[1],buttons=[
                         button('Продолжить', hide=True)])
             else: intro.welcome(state=sessionState)
+
+        # Конец
+        elif appState['place_seen']=='end':
+            return intro.end_game(request['command'])
             
 
         elif context=='welcome':
