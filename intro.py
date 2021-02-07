@@ -30,7 +30,8 @@ def say_help():
   tts=ph.help_['tts']
   return make_only_response(
     text=txt,
-    tts=tts
+    tts=tts,
+    buttons=[button('Продолжить', hide=True),]
   )
 
 def ask_geo(state,card=None): #Карточка только для первого входа
