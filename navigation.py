@@ -67,7 +67,7 @@ def give_direction_last(data, sessionState, appState, add_text=None):
     txt = data[0]
     tts = data[1]
     sessionState['status']=None  
-    
+
   # картинка??
   buttons = [
     { 'title': "Где я?", 'hide': True },
@@ -148,13 +148,6 @@ def navigation(appState, sessionState, intents, user_location, event={}):
     else:
       return fallback(event.get('request', 'no event').get('command', 'no command'))
 
-
-    # elif 'help' in intents:
-    #   return help(nav_context)
-    #   return give_direction(data[0], sessionState, appState)
-    # else:
-    #   return fallback(2step)
-
   # Историческая справка, про то куда он идёт
   elif nav_context == 'tell_story':
     if 'answer_da' in intents or 'YANDEX.CONFIRM' in intents:
@@ -169,8 +162,6 @@ def navigation(appState, sessionState, intents, user_location, event={}):
       return fallback(event.get('request', 'no event').get('command', 'no command'))
 
   elif 'povtor'in intents or "YANDEX.REPEAT" in intents or 'next' in intents:
-    # give_direction_last(data[3], sessionState, appState) <- 'give_direction'
-    # give_direction_last(data[3], sessionState, appState) <- 'tell_story'
     if sessionState['status'] == 'full_story':
       return give_direction_last(data[3], sessionState, appState, add_text=data[2])
     else:
@@ -202,7 +193,7 @@ def navigation(appState, sessionState, intents, user_location, event={}):
     return person(event=event, step=appState['step'], place=appState['place_seen'], status=appState.get('status'))
   
   else:
-    return fallback(event)
+    return fallback(event.get('request', 'no event').get('command', 'no command'))
 
 
 

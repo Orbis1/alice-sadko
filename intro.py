@@ -60,7 +60,7 @@ def continue_game(state):
   )
 
 def fallback(command):
-  txt='Вы молвили {}. Команда не распознана. Поробуйте ещё раз'.format(command)
+  txt='Мне слова заморские почуделись: "{}". Не разумею, что нужно. Попробуй ещё по другому молвить али кликни помощь'.format(command)
   return make_only_response(
     text = txt,
   )
