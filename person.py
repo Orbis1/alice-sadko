@@ -8,6 +8,7 @@ from intro import say_help
 def person(event,step,place, status=None, id_zag=None):
     event['state']['session']['context']='quest'
     intents=event['request'].get('nlu',{}).get('intents')
+#     spravka=event.get('state').get('session').get('spravka')
     # if step==0:
 #         Выбираем ИД загадки
         # id_zag=random.choice(pers_sprav[place]['medium']) # в дальнейшем можно прописать уровень
@@ -25,7 +26,6 @@ def person(event,step,place, status=None, id_zag=None):
                                     status=param[2], event=event)
             elif 'povtor'in intents or "YANDEX.REPEAT" in intents or 'next' in intents:
                 event['state']['session']['spravka']=None
-                event['state']['session']['spravka2']=None
                 step=0
                 param=text_to_resp(pers_step,place,step)
                 return make_response(text=param[0],tts=param[1],buttons=[
@@ -39,7 +39,7 @@ def person(event,step,place, status=None, id_zag=None):
                 return end_session1(text=param[0],tts=param[1],event=event)
             elif event['state']['session']['spravka']=='spravka':
                 event['state']['session']['spravka']='spravka2'
-                param=text_to_resp(fallback_answer,place,0)
+                param=text_to_resp(fallback_answer,place,3)
                 return make_response(text=param[0],tts=param[1],buttons=[
                     button('Продолжить', hide=True)], step=step, place=place,
                                     status=status, event=event)
@@ -109,7 +109,6 @@ def person(event,step,place, status=None, id_zag=None):
                 
         elif 'povtor'in intents or "YANDEX.REPEAT" in intents or 'next' in intents:
             event['state']['session']['spravka']=None
-            event['state']['session']['spravka2']=None
             if status=='help_not_end' or status=='help_end':
                 if step==3: return help_4_zagadka (event,999,povtor=True)
                 if step==4: return help_4_zagadka (event,pers_sprav[place][0],povtor=True)
@@ -157,7 +156,7 @@ def person(event,step,place, status=None, id_zag=None):
             return end_session1(text=param[0],tts=param[1],event=event)
         elif event['state']['session']['spravka']=='spravka':
             event['state']['session']['spravka']='spravka2'
-            param=text_to_resp(fallback_answer,place,0)
+            param=text_to_resp(fallback_answer,place,3)
             return make_response(text=param[0],tts=param[1],buttons=[
                     button('Продолжить', hide=True)], step=step, place=place,
                                     status=status, event=event)
