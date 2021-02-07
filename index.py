@@ -49,12 +49,14 @@ def handler(event, context):
                 # запрос геолокации
                 if user_location is None and geo_asked==False:
                     return intro.ask_geo(state=sessionState,card=True)
-                if user_location is not None and geo_asked==True:
+                elif user_location is not None and geo_asked==True:
                     return intro.how_far_from_kremlin(sessionState=sessionState, appState=appState, user_location=user_location)
-                if geo_asked==False:
+                elif geo_asked==False:
                     return intro.ask_geo(state=sessionState,card=True)
+            elif 'povtor'in intents or "YANDEX.REPEAT" in intents:
+                return intro.welcome(state=sessionState)
             if 'net' in intents or 'YANDEX.REJECT' in intents:
-                    return intro.bye()
+                    return intro.bye('Возвращайся, когда будешь готов. Я и Садко будем ждать тебя')
             else:
                 return intro.ask_geo(state=sessionState,card=True)
             return intro.ask_geo(state=sessionState,card=True)
@@ -83,12 +85,17 @@ def handler(event, context):
                 return navigation(appState, sessionState, intents, user_location)
 #      После истории про Кремль
         elif context=='within_kremlin_next':
-            if 'answer_da' in intents or 'YANDEX.CONFIRM' in intents:
-                return navigation(appState, sessionState, intents, user_location)
+            if 'answer_da' in intents or 'YANDEX.CONFIRM' in intents: #???
+                return navigation(appState, sessionState, intents, user_location)#???
+            elif 'povtor'in intents or "YANDEX.REPEAT" in intents:
+                return intro.how_far_from_kremlin(sessionState=sessionState, appState=appState, user_location=user_location)
             else:
                 return intro.bye()
+
         elif context=='around_kremlin':
-            if 'answer_da' in intents or 'YANDEX.CONFIRM' in intents or 'im_ready' in intents:
+            if 'answer_da' in intents or 'YANDEX.CONFIRM' in intents or 'im_ready' in intents:#???
+                return intro.how_far_from_kremlin(sessionState=sessionState, appState=appState, user_location=user_location)#???
+            elif 'povtor'in intents or "YANDEX.REPEAT" in intents:
                 return intro.how_far_from_kremlin(sessionState=sessionState, appState=appState, user_location=user_location)
             else:
                 return intro.bye()
@@ -96,8 +103,12 @@ def handler(event, context):
         elif context=='somewhere':
             if 'answer_da' in intents or 'YANDEX.CONFIRM' in intents:
                 return navigation(appState, sessionState, intents, user_location)
-            if 'net' in intents or 'YANDEX.REJECT' in intents:
+            elif 'net' in intents or 'YANDEX.REJECT' in intents:
                 return intro.bye()
+            elif 'povtor'in intents or "YANDEX.REPEAT" in intents:
+                return intro.how_far_from_kremlin(sessionState=sessionState, appState=appState, user_location=user_location)
+            else:
+                return fallback()
         
         elif context=='quest':
             return person(event=event, step=appState['step'], place=appState['place_seen'], status=appState.get('status'))
