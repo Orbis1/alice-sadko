@@ -17,6 +17,7 @@ def welcome(state, appStateClear=False, appState=False):
       appState[key]='null'
   return make_only_response(
     text=ph.hi['txt'],
+    tts=ph.hi['tts'],
     buttons=ph.hi['buttons']
   )
 

@@ -12,9 +12,9 @@ def give_direction(data, sessionState, appState):
   tts = data[1]
   # картинка??
   buttons = [
-    { 'title': "Повтори", 'hide': False },
-    { 'title': "Да", 'hide': False },
-    { 'title': "Нет", 'hide': False },
+    { 'title': "Повтори", 'hide': True },
+    { 'title': "Да", 'hide': True },
+    { 'title': "Нет", 'hide': True },
   ]
 
   # Работа со стейтом
@@ -38,8 +38,8 @@ def tell_story(data, sessionState, appState):
   tts = data[1]
   # картинка??
   buttons = [
-    { 'title': "Да", 'hide': False },
-    { 'title': "Нет", 'hide': False },
+    { 'title': "Да", 'hide': True },
+    { 'title': "Нет", 'hide': True },
   ]
 
   # Работа со стейтом
@@ -68,9 +68,9 @@ def give_direction_last(data, sessionState, appState, add_text=None):
   
   # картинка??
   buttons = [
-    { 'title': "Где я?", 'hide': False },
-    { 'title': "Я на месте", 'hide': False },
-    { 'title': "Повтори", 'hide': False },
+    { 'title': "Где я?", 'hide': True },
+    { 'title': "Я на месте", 'hide': True },
+    { 'title': "Повтори", 'hide': True },
   ]
 
   # Работа со стейтом
@@ -159,8 +159,12 @@ def navigation(appState, sessionState, intents, user_location, event={}):
       return give_direction_last(data[3], sessionState, appState, add_text=data[2])
     elif 'net' in intents or 'YANDEX.REJECT' in intents:
       return give_direction_last(data[3], sessionState, appState)
-    elif 'povtor'in intents or "YANDEX.REPEAT" in intents:
+    elif 'povtor'in intents or "YANDEX.REPEAT" in intents or 'next' in intents:
       return tell_story(data[1], sessionState, appState)
+    elif 'help'in intents:
+      return say_help()
+    else:
+      return fallback(event.get('request', 'no event').get('command', 'no command'))
 
   # обработка "Где я?"
   elif 'where_am_i' in intents:
