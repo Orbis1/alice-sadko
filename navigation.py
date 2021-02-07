@@ -1,5 +1,5 @@
 from person import person
-from fun import make_only_response
+from fun import big_image, make_only_response
 from resource import quest_order, find_object
 from intro import get_distance_to_object
 from sights import sights
@@ -11,7 +11,7 @@ def give_direction(data, sessionState, appState):
   # Контент для ответа
   txt = data[0]
   tts = data[1]
-  card = data[2]
+  card = big_image(image_ids=data[2], description=txt) if data[2] is not None else None
 
   buttons = [
     { 'title': "Повтори", 'hide': True },
@@ -28,6 +28,7 @@ def give_direction(data, sessionState, appState):
   else:
     sessionState['nav_step'] += 1
   
+
   return make_only_response(
     text=txt,
     tts=tts,
@@ -39,7 +40,7 @@ def tell_story(data, sessionState, appState):
   # Контент для ответа
   txt = data[0]
   tts = data[1]
-  card = data[2]
+  card = big_image(image_ids=data[2], description=txt) if data[2] is not None else None
   buttons = [
     { 'title': "Да", 'hide': True },
     { 'title': "Нет", 'hide': True },
@@ -65,7 +66,7 @@ def give_direction_last(data, sessionState, appState, add_text=None, dist=None )
   # Контент для ответа
   add=''
   if dist is not None:
-    add = 'Осталось пройти ещё {} метров \n'.format(math.trunc(dist)) 
+    add = 'Осталось пройти немного: {} метр(а) \n'.format(math.trunc(dist)) 
 
   if add_text is not None:
     txt = add + add_text[0] + '\n' + data[0]
@@ -76,7 +77,7 @@ def give_direction_last(data, sessionState, appState, add_text=None, dist=None )
     tts = add + data[1]
     sessionState['status']=None  
   
-  card = data[2]
+  card = big_image(image_ids=data[2], description=txt) if data[2] is not None else None
 
   buttons = [
     { 'title': "Где я?", 'hide': True },
@@ -105,7 +106,7 @@ def switch_to_pers(data, sessionState, appState):
   txt = data[0]
   tts = data[1]
   
-  card = data[2]
+  card = big_image(image_ids=data[2], description=txt) if data[2] is not None else None
   buttons = [
     { 'title': "Где я?", 'hide': False },
     { 'title': "Я готов", 'hide': False },

@@ -58,8 +58,7 @@ def make_only_response(
     if buttons is not None:
         response['buttons'] = buttons
     if card is not None:
-        bigim=big_image(image_ids=card, description=text)
-        response['card']=bigim
+        response['card']=card
     if directives is True:
         response['directives']={"request_geolocation": {}}
 
