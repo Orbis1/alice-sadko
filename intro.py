@@ -11,12 +11,16 @@ def bye(txt='До скорых встреч!'):
   )
 
 def welcome(state, appStateClear=False, appState=False):
-  state['context'] = 'welcome'
-  if appStateClear:
-    for key in appState:
-      appState[key]='null'
-  return make_only_response(
+    state['context'] = 'welcome'
+    state['spravka']=None
+    if appStateClear:
+      for key in appState:
+        appState[key]='null'
+      state['geo_asked']=False
+      state['spravka']=None
+    return make_only_response(
     text=ph.hi['txt'],
+    tts=ph.hi['tts'],
     buttons=ph.hi['buttons']
   )
 
@@ -50,9 +54,9 @@ def ask_geo(state,card=None): #Карточка только для первог
         tts = ph.needgeo['tts'],
         directives = True,
   )
-
 def continue_game(state):
-  state['context'] = 'continue_game'; 
+  state['context'] = 'continue_game'
+  state['spravka']=None 
   return make_only_response(
     text = 'У вас есть сохранённый прогресс. Продолжить?',
     buttons=ph.hi['buttons']
