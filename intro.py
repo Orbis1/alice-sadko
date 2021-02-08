@@ -4,7 +4,7 @@ from sights import sights
 import phrases as ph
 from resource import quest_order
 
-def bye(txt='До скорых встреч!'):
+def bye(txt='Скоро сказка сказывается, да не скоро дело делается. Возвращайся! Я и Садко будем ждать тебя'):
   return make_only_response(
     text=txt,
     end_session=True
@@ -12,7 +12,7 @@ def bye(txt='До скорых встреч!'):
 
 def end_game(gift):
   txt='И тут как ниоткуда появился ларец перед Садко. Открыл садко ларец, а там - {}. Вот и сказочки конец, а кто слушал - молодец.'.format(gift)
-  tts='<speaker audio="dialogs-upload/ca5036ee-1029-4a07-960c-8cf27f1258a3/107591dc-b7d4-462b-8ccd-0ad938ad796a.opus">' + txt + '<speaker audio="dialogs-upload/ca5036ee-1029-4a07-960c-8cf27f1258a3/2fdf95a6-bcbf-4419-945d-31337770b577.opus">'
+  tts='<speaker audio="dialogs-upload/ca5036ee-1029-4a07-960c-8cf27f1258a3/107591dc-b7d4-462b-8ccd-0ad938ad796a.opus">' + 'И тут как ниоткуда появился ларец перед Садко. Открыл садко ларец, а там sil <[200]> {}. Вот и сказочки конец, а кто слушал - молодец.'.format(gift) + '<speaker audio="dialogs-upload/ca5036ee-1029-4a07-960c-8cf27f1258a3/2fdf95a6-bcbf-4419-945d-31337770b577.opus">'
   return make_only_response(
     text=txt,
     tts=tts,
@@ -140,13 +140,13 @@ def get_distance_to_object(user_location, target_location):
 
   return distance
 
-def get_url_map(user_location, target_location):
-  lat1 = user_location['lat']
-  lon1 = user_location['lon']
-  lat2 = target_location['lat']
-  lon2 = target_location['lon']
-  url = 'https://yandex.ru/maps/?rtext={lat1},{lon1}~{lat2},{lon2}&rtt=mt'
-  return url
+# def get_url_map(user_location, target_location):
+#   lat1 = user_location['lat']
+#   lon1 = user_location['lon']
+#   lat2 = target_location['lat']
+#   lon2 = target_location['lon']
+#   url = 'https://yandex.ru/maps/?rtext={lat1},{lon1}~{lat2},{lon2}&rtt=mt'.format(lat1=lat1,)
+#   return url
 
 # story
 

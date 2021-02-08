@@ -88,8 +88,7 @@ def big_image(image_ids,description):
 
 def end_session1(text=None,tts=None,step=None,place=None,status=None, event={}):
     if text is None:
-        text='''Скоро сказка сказывается, да не скоро дело делается.\
-         Я и Садко, будем ждать тебя. Возвращайся скорей!'''
+        text='''Скоро сказка сказывается, да не скоро дело делается. Я и Садко, будем ждать тебя. Возвращайся скорей!'''
         tts='''<speaker audio="dialogs-upload/ba73ad37-33af-4bea-8c8d-b6689c2febdd/7379f654-3b36-40ec-8909-970d66673535.opus">'''
     else:
         text=text
@@ -161,7 +160,7 @@ def help_4_zagadka (event,ind_1,povtor=None):
         status=param[2], card=param[3],event=event)
     elif status=='help_end':
         param=text_to_resp(pers_help,ind_1,2)
-        return end_session1(text=param[0],tts=param[1],step=0,place=place,status=param[2])
+        return end_session1(text=param[0],tts=param[1],step=0,place=place,status=param[2],event=event)
     else:
         return fallback(event)
 
