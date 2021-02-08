@@ -41,7 +41,7 @@ def handler(event, context):
 
 
         elif context=='continue_game':
-            place='cathedral' if appState['place_seen']=='end' else appState['place_seen']
+            place='cathedral' if appState.get('place_seen')=='end' else appState.get('place_seen')
             if 'answer_da' in intents or 'YANDEX.CONFIRM' in intents:
                 return person(event=event, step=0, place=place, status=appState.get('status')) #?
             elif 'net' in intents or 'YANDEX.REJECT' in intents:
@@ -67,7 +67,7 @@ def handler(event, context):
             else: intro.welcome(state=sessionState)
 
         # Конец
-        elif appState['place_seen']=='end':
+        elif appState.get('place_seen')=='end':
             return intro.end_game(request['command'])
             
 
