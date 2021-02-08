@@ -1,12 +1,15 @@
-
+# person
 from fun import help_4_zagadka, text_to_resp, make_response, fallback, button,end_session1
 from resource import fallback_answer,answer, pers_step, pers_zag,pers_sprav, quest_order
-# from navigation import navigation
+from intro import say_help
 
 
 def person(event,step,place, status=None, id_zag=None):
     event['state']['session']['context']='quest'
+    event['state']['session']['nav_context']=None
     intents=event['request'].get('nlu',{}).get('intents')
+    step = 0 if step=='null' or step is None else step
+#     spravka=event.get('state').get('session').get('spravka')
     # if step==0:
 #         Выбираем ИД загадки
         # id_zag=random.choice(pers_sprav[place]['medium']) # в дальнейшем можно прописать уровень
@@ -22,12 +25,25 @@ def person(event,step,place, status=None, id_zag=None):
                 return make_response(text=param[0],tts=param[1],buttons=[
                     button('Да', hide=True),button('Нет', hide=True)],step=step+2, place=place,
                                     status=param[2], event=event)
-            elif 'povtor'in intents or "YANDEX.REPEAT" in intents:
+            elif 'povtor'in intents or "YANDEX.REPEAT" in intents or 'next' in intents:
+                event['state']['session']['spravka']=None
                 step=0
                 param=text_to_resp(pers_step,place,step)
                 return make_response(text=param[0],tts=param[1],buttons=[
             button('Повтори', hide=True), button('Жар-птицу', hide=True),button('Я не знаю', hide=True),],step=step+1, place=place,
-            status=param[2], event=event)                    
+            status=param[2], event=event)
+            elif 'help' in intents:
+                event['state']['session']['spravka']='spravka'
+                return say_help()
+            elif event['state']['session']['spravka']=='spravka2':
+                param=text_to_resp(fallback_answer,place,1)
+                return end_session1(text=param[0],tts=param[1],event=event)
+            elif event['state']['session']['spravka']=='spravka':
+                event['state']['session']['spravka']='spravka2'
+                param=text_to_resp(fallback_answer,place,3)
+                return make_response(text=param[0],tts=param[1],buttons=[
+                    button('Продолжить', hide=True)], step=step, place=place,
+                                    status=status, event=event)
             
             else:
                 step=step+1
@@ -41,6 +57,9 @@ def person(event,step,place, status=None, id_zag=None):
         #     user_location = event['session'].get('location')
         #     return  navigation(appState, sessionState, intents, user_location, event)
 # Обработка ответа "да"
+        elif 'help' in intents:
+            event['state']['session']['spravka']='spravka'
+            return say_help()
         elif 'answer_da' in intents or 'YANDEX.CONFIRM' in intents:
             if step ==4 or step ==6:
                 return make_response(text='Говори!', step=step,place=place,status=status, event=event)
@@ -68,6 +87,7 @@ def person(event,step,place, status=None, id_zag=None):
                                     status=param[2], event=event)
             elif step == 5:
                 param=text_to_resp(pers_zag,pers_sprav[place][1],1,obj_3=True)
+                buttons = None if getNextPlace(place)=='end' else [{ 'title': "Я готов", 'hide': True }]
                 return make_response(
                     text=param[0],
                     tts=param[1],
@@ -76,8 +96,8 @@ def person(event,step,place, status=None, id_zag=None):
                     status=param[2],
                     place_next=param[3], 
                     event=event,
-                    # context='navigation',
-                    buttons=[{ 'title': "Я готов", 'hide': True }],
+                    context='navigation',
+                    buttons=buttons,
                     # nav_context='give_direction',
                     nav_step=0
 
@@ -89,7 +109,8 @@ def person(event,step,place, status=None, id_zag=None):
                 
 # Обработка повторов            
                 
-        elif 'povtor'in intents or "YANDEX.REPEAT" in intents:
+        elif 'povtor'in intents or "YANDEX.REPEAT" in intents or 'next' in intents:
+            event['state']['session']['spravka']=None
             if status=='help_not_end' or status=='help_end':
                 if step==3: return help_4_zagadka (event,999,povtor=True)
                 if step==4: return help_4_zagadka (event,pers_sprav[place][0],povtor=True)
@@ -119,6 +140,7 @@ def person(event,step,place, status=None, id_zag=None):
                                     status=param[2], event=event)
         elif answer[place][pers_sprav[place][1]] in intents and step==6:
                 param=text_to_resp(pers_zag,pers_sprav[place][1],1,obj_3=True)
+                buttons = None if getNextPlace(place)=='end' else [{ 'title': "Я готов", 'hide': True }]
                 return make_response(
                     text=param[0],
                     tts=param[1],
@@ -126,11 +148,21 @@ def person(event,step,place, status=None, id_zag=None):
                     status=param[2],
                     place_next=param[3], 
                     event=event,
-                    # context='navigation',
-                    buttons=[{ 'title': "Я готов", 'hide': True }],
+                    context='navigation',
+                    buttons=buttons,
                     # nav_context='give_direction'
                     nav_step=0
                 )
+#  обработка других ответов по справке
+        elif event['state']['session']['spravka']=='spravka2':
+            param=text_to_resp(fallback_answer,place,1)
+            return end_session1(text=param[0],tts=param[1],event=event)
+        elif event['state']['session']['spravka']=='spravka':
+            event['state']['session']['spravka']='spravka2'
+            param=text_to_resp(fallback_answer,place,3)
+            return make_response(text=param[0],tts=param[1],buttons=[
+                    button('Продолжить', hide=True)], step=step, place=place,
+                                    status=status, event=event)
 # Обработка else
 
         else:
