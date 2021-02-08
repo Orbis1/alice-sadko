@@ -160,7 +160,7 @@ def help_4_zagadka (event,ind_1,povtor=None):
         status=param[2], card=param[3],event=event)
     elif status=='help_end':
         param=text_to_resp(pers_help,ind_1,2)
-        return end_session1(text=param[0],tts=param[1],step=0,place=place,status=param[2])
+        return end_session1(text=param[0],tts=param[1],step=0,place=place,status=param[2],event=event)
     else:
         return fallback(event)
 
