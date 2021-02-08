@@ -4,7 +4,7 @@ from sights import sights
 import phrases as ph
 from resource import quest_order
 
-def bye(txt='Скоро сказка сказывается, да не скоро дело делается. Возвращайся! Я и Садкл будем ждать тебя'):
+def bye(txt='Скоро сказка сказывается, да не скоро дело делается. Возвращайся! Я и Садко будем ждать тебя'):
   return make_only_response(
     text=txt,
     end_session=True

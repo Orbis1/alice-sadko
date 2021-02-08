@@ -88,8 +88,7 @@ def big_image(image_ids,description):
 
 def end_session1(text=None,tts=None,step=None,place=None,status=None, event={}):
     if text is None:
-        text='''Скоро сказка сказывается, да не скоро дело делается.\
-         Я и Садко, будем ждать тебя. Возвращайся скорей!'''
+        text='''Скоро сказка сказывается, да не скоро дело делается. Я и Садко, будем ждать тебя. Возвращайся скорей!'''
         tts='''<speaker audio="dialogs-upload/ba73ad37-33af-4bea-8c8d-b6689c2febdd/7379f654-3b36-40ec-8909-970d66673535.opus">'''
     else:
         text=text
