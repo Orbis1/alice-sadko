@@ -62,7 +62,7 @@ def person(event,step,place, status=None, id_zag=None):
             return say_help()
         elif 'answer_da' in intents or 'YANDEX.CONFIRM' in intents:
             if step ==4 or step ==6:
-                return make_response(text='Говори!', step=step,place=place,status=status, event=event)
+                return make_response(text='Говори!',tts=fallback_answer[place][4][1], step=step,place=place,status=status, event=event)
             else:
                 if step==3:
                     param=text_to_resp(pers_zag,pers_sprav[place][0],0)
