@@ -226,7 +226,7 @@ def handler(event, context):
                 return intro.bye()
         
         elif context=='quest':
-            return person(event=event, step=appState['step'], place=appState['place_seen'], status=appState.get('status'))
+            return person(event=event, step=appState.get('step'), place=appState.get('place_seen'), status=appState.get('status'))
 
         elif context=='navigation':
             return navigation(appState, sessionState, intents, user_location, event)

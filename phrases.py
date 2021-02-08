@@ -40,7 +40,7 @@ needgeo_first = {
 }
 needgeo = {
   'txt': 'Дабы не потеряться в тридевятом царстве возьми с собой один из волшебных клубков с геолокацией.',
-  'tts': '<speaker audio="dialogs-upload/ba73ad37-33af-4bea-8c8d-b6689c2febdd/19fcba37-2e9e-468c-924f-86f2153a0a3f.opus">'
+  'tts': '<speaker audio="dialogs-upload/ba73ad37-33af-4bea-8c8d-b6689c2febdd/b9c53210-ce19-4b01-ba9b-ad99c8290ca4.opus">'
 }
 help_ = {
   'txt': '''Запомни следующие правила, они тебе помогут:

@@ -153,7 +153,7 @@ def navigation(appState, sessionState, intents, user_location, event={}):
     if 'answer_da' in intents or 'YANDEX.CONFIRM' in intents:
       return tell_story(data[1], sessionState, appState)
     elif 'net' in intents or 'YANDEX.REJECT' in intents:
-      sessionState['status'] == 'give_direction_last_3'
+      sessionState['status'] = 'give_direction_last_3'
       return give_direction_last(data[3], sessionState, appState)
     elif 'povtor'in intents or "YANDEX.REPEAT" in intents or 'next' in intents:
       return give_direction(data[0], sessionState, appState)
