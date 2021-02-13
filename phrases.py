@@ -35,7 +35,7 @@ intro = {
 
 needgeo_first = {
   'txt': 'Дабы не потеряться в тридевятом царстве возьми с собой один из волшебных клубков с геолокацией.',
-  'tts': '<speaker audio="dialogs-upload/ba73ad37-33af-4bea-8c8d-b6689c2febdd/654e1be5-2e58-470d-a989-9805e2bc158b.opus">',
+  'tts': '<speaker audio="dialogs-upload/ba73ad37-33af-4bea-8c8d-b6689c2febdd/b9c53210-ce19-4b01-ba9b-ad99c8290ca4.opus">',
    'card': big_image(image_ids='''937455/7058de6afdae6f13c4b8''',description='Дабы не потеряться в тридевятом царстве возьми с собой один из волшебных клубков с геолокацией.')
 }
 needgeo = {

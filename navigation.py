@@ -71,11 +71,11 @@ def give_direction_last(data, sessionState, appState, add_text=None, dist=None )
   if add_text is not None:
     txt = add + add_text[0] + '\n' + data[0]
     tts = add + add_text[1] + '\n' + data[1]
-    sessionState['status']='full_story'
+    # sessionState['status']='full_story'
   else:
     txt = add + data[0]
     tts = add + data[1]
-    sessionState['status']=None  
+    # sessionState['status']=None  
   
   card = big_image(image_ids=data[2], description=txt) if data[2] is not None else None
 
@@ -153,6 +153,7 @@ def navigation(appState, sessionState, intents, user_location, event={}):
     if 'answer_da' in intents or 'YANDEX.CONFIRM' in intents:
       return tell_story(data[1], sessionState, appState)
     elif 'net' in intents or 'YANDEX.REJECT' in intents:
+      sessionState['status'] = 'give_direction_last_3'
       return give_direction_last(data[3], sessionState, appState)
     elif 'povtor'in intents or "YANDEX.REPEAT" in intents or 'next' in intents:
       return give_direction(data[0], sessionState, appState)
@@ -164,8 +165,10 @@ def navigation(appState, sessionState, intents, user_location, event={}):
   # Историческая справка, про то куда он идёт
   elif nav_context == 'tell_story':
     if 'answer_da' in intents or 'YANDEX.CONFIRM' in intents:
+      sessionState['status'] = 'give_direction_last_2'
       return give_direction_last(data[2], sessionState, appState)
     elif 'net' in intents or 'YANDEX.REJECT' in intents:
+      sessionState['status'] = 'give_direction_last_3'
       return give_direction_last(data[3], sessionState, appState)
     elif 'povtor'in intents or "YANDEX.REPEAT" in intents or 'next' in intents:
       return tell_story(data[1], sessionState, appState)
@@ -174,38 +177,59 @@ def navigation(appState, sessionState, intents, user_location, event={}):
     else:
       return fallback(event.get('request', 'no event').get('command', 'no command'))
 
-  elif 'povtor'in intents or "YANDEX.REPEAT" in intents or 'next' in intents:
-    if sessionState['status'] == 'full_story':
-      return give_direction_last(data[2])
-    else:
-      return give_direction_last(data[3], sessionState, appState)
-  elif 'help'in intents:
+  elif nav_context == 'give_direction_last':
+    if 'povtor'in intents or "YANDEX.REPEAT" in intents or 'next' in intents:
+      if sessionState['status'] == 'give_direction_last_2':
+        return give_direction_last(data[2], sessionState, appState)
+      elif sessionState['status'] == 'give_direction_last_3':
+        return give_direction_last(data[3], sessionState, appState)
+      elif sessionState['status'] == 'give_direction_last_4':
+        return give_direction_last(data[4], sessionState, appState)
+      elif sessionState['status'] == 'give_direction_last_5':
+        return give_direction_last(data[5], sessionState, appState)
+    elif 'help'in intents:
       return say_help()
+    elif 'where_am_i' in intents or 'i_am_here' in intents:
+      print('user_location', user_location)
+      if user_location is not None and user_location['accuracy'] < 66 and story_mode==False:
+      # если геолокация есть и погрешность не больше 50 метров мы не в режиме истории
+        target = sights[place]
+        distance = get_distance_to_object(user_location, target['location'])
+        print('Расстояние до {name} составялет {distance}'.format(name=target, distance=distance))
+        if distance > 30:
+          sessionState['status'] = 'give_direction_last_4'
+          return give_direction_last(data[4], sessionState, appState, dist=distance)
+        if distance <= 30:
+          sessionState['status'] = 'give_direction_last_5'
+          return give_direction_last(data[5], sessionState, appState)
+      else:
+        if story_mode==True:
+        # если мы в режиме истории, то переходим к следующему объекту
+          sessionState['status'] = 'give_direction_last_5'
+          return give_direction_last(data[5], sessionState, appState)
+        else:
+        # если геолокации нет или слишком большая погредшность, то даём подсказку
+          sessionState['status'] = 'give_direction_last_4'
+          return give_direction_last(data[4], sessionState, appState)
+        # обработка "Я готов"
+    elif 'im_ready' in intents:
+      return person(event=event, step=appState.get('step'), place=appState.get('place_seen'), status=appState.get('status'))
+    else:
+      return fallback(event.get('request', 'no event').get('command', 'no command'))
+
+  # elif 'povtor'in intents or "YANDEX.REPEAT" in intents or 'next' in intents:
+  #   if sessionState['status'] == 'full_story':
+  #     return give_direction_last(data[2])
+  #   else:
+  #     return give_direction_last(data[3], sessionState, appState)
+  # elif 'help'in intents:
+  #     return say_help()
 
   # обработка "Где я?"
-  elif 'where_am_i' in intents or 'i_am_here' in intents:
-    print('user_location', user_location)
-    if user_location is not None and user_location['accuracy'] < 66 and story_mode==False:
-    # если геолокация есть и погрешность не больше 50 метров мы не в режиме истории
-      target = sights[place]
-      distance = get_distance_to_object(user_location, target['location'])
-      print('Расстояние до {name} составялет {distance}'.format(name=target, distance=distance))
-      if distance > 30:
-        return give_direction_last(data[4], sessionState, appState, dist=distance)
-      if distance <= 30:
-        return give_direction_last(data[5], sessionState, appState)
-    else:
-      if story_mode==True:
-      # если мы в режиме истории, то переходим к следующему объекту
-        return give_direction_last(data[5], sessionState, appState)
-      else:
-      # если геолокации нет или слишком большая погредшность, то даём подсказку
-        return give_direction_last(data[4], sessionState, appState)
+
      
 
-  # обработка "Я готов"
-  elif 'im_ready' in intents:
-    return person(event=event, step=appState['step'], place=appState['place_seen'], status=appState.get('status'))
+
   
   else:
     return fallback(event.get('request', 'no event').get('command', 'no command'))
