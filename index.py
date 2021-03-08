@@ -16,7 +16,7 @@ def handler(event, context):
     print('>>>event: ', event, appId)
 
     # state
-    appState = event['state']['application']
+    appState = event.get('state', {})['application']
     sessionState = event['state']['session']
     print('>>>sessionState: ', sessionState, appId)
     print('>>>appState: ', appState, appId)

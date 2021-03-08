@@ -15,7 +15,7 @@ def make_response(
     nav_context=None,
     nav_step=None
     ):
-    appState = event['state']['application']
+    appState = event.get('state', {})['application']
     sessionState = event['state']['session']
 
     response = {
