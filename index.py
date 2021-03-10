@@ -10,14 +10,14 @@ from resource import fallback_answer
 def handler(event, context):
 
     # session
-    new_session = event['session']['new']
-    user_location = event['session'].get('location')
-    appId = event['session']['application'].get('application_id', None)
+    new_session = event.get('session',{}).get('new',{})
+    user_location = event.get('session',{}).get('location',{})
+    appId = event.get('session',{}).get('application',{}).get('application_id')
     print('>>>event: ', event, appId)
 
     # state
-    appState = event.get('state', {}).get('application')
-    sessionState = event['state']['session']
+    appState = event.get('state', {}).get('application', {})
+    sessionState = event.get('state',{}).get('session', {})
     print('>>>sessionState: ', sessionState, appId)
     print('>>>appState: ', appState, appId)
 
