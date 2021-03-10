@@ -52,7 +52,7 @@ def person(event,step,place, status=None, id_zag=None):
                     button('Да', hide=True),button('Нет', hide=True)],step=step+1, place=place,
                                     status=param[2], event=event)
         # elif 'im_ready' in intents:
-        #     appState = event.get('state', {})['application']
+        #     appState = event.get('state', {}).get('application')
         #     sessionState = event['state']['session']
         #     user_location = event['session'].get('location')
         #     return  navigation(appState, sessionState, intents, user_location, event)
