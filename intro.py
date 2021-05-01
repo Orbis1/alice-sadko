@@ -80,7 +80,7 @@ def fallback(command):
 # with location
 def how_far_from_kremlin(appState, sessionState, user_location):
    
-    if user_location is not None and user_location['accuracy'] < 100:
+    if user_location is not None and user_location.get('accuracy', 100) < 100:
         target = sights['kupol']
         distance = get_distance_to_object(user_location, target['location'])
         print('Расстояние до {name} составялет {distance}'.format(name=target['name'], distance=distance))

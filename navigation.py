@@ -191,7 +191,7 @@ def navigation(appState, sessionState, intents, user_location, event={}):
       return say_help()
     elif 'where_am_i' in intents or 'i_am_here' in intents:
       print('user_location', user_location)
-      if user_location is not None and user_location['accuracy'] < 66 and story_mode==False:
+      if user_location is not None and user_location.get('accuracy', 66) < 66 and story_mode==False:
       # если геолокация есть и погрешность не больше 50 метров мы не в режиме истории
         target = sights[place]
         distance = get_distance_to_object(user_location, target['location'])
